@@ -135,53 +135,53 @@ export default function Home() {
   ];
 
   const employerServices = [
-    {
-      title: "בקרה על תלושי שכר",
-      description: "מניעת טעויות ושמירה על חוקיות",
-      icon: <FileText className="h-8 w-8 text-orange-500" />,
-      subtitle: "לבדוק. לוודא. לעבוד בראש שקט.",
-      fullDescription: "ניהול שכר תקין הוא אחד התחומים הרגישים ביותר בעסק - טעויות קטנות עלולות להפוך במהירות להוצאה גדולה או לתביעה מיותרת. אני מציעה שירות בקרה מקיף על מערכת השכר בעסק שלך, המותאם במיוחד לעסקים קטנים ובינוניים. השירות כולל בדיקת תלושי שכר, בחינת הפרשות סוציאליות, עמידה בדרישות החוק והרגולציה, והקמת נהלי בקרה פנימיים שמונעים טעויות מראש. בזכות הניסיון הרב שלי כחשבת ומבקרת שכר, אני יודעת לזהות אי-סדרים, למנוע טעויות חוזרות ולהעניק למעסיק שקט נפשי וביטחון שהכול מתנהל כשורה.",
-      benefitsTitle: "השירות כולל",
-      benefits: [
-        "בדיקה יסודית של תלושי השכר והעמידה בדרישות דיני העבודה",
-        "בקרה על חישובי שכר, שעות עבודה, ניכויים והפרשות לפנסיה ולביטוח לאומי",
-        "הקמת נהלי בקרה פנימיים והדרכה לתפעול שוטף של מערכת השכר",
-        "זיהוי מוקדם של טעויות שעלולות לעלות כסף או לגרור תביעות עובדים",
-        "דו\"ח ממצאים ברור עם המלצות מעשיות לשיפור וייעול"
-      ],
-      additionalBenefitsTitle: "היתרונות שלך",
-      additionalBenefits: [
-        "מניעת טעויות יקרות וחיסכון בזמן ובכסף",
-        "עמידה מלאה בדרישות החוק ובתקנות העבודה",
-        "הקמת מערכת בקרה פנימית שמבטיחה דיוק ושקיפות",
-        "שמירה על אמון העובדים והגנה על מוניטין העסק"
-      ],
-      buttonText: "וודא שהכול מחושב נכון"
-    },
-    {
-      title: "ייעוץ בהסכמי עבודה",
-      description: "בניית חוזים מותאמים והוגנים",
-      icon: <User className="h-8 w-8 text-orange-500" />,
-      subtitle: "לדייק. לבדוק. להעסיק כחוק.",
-      fullDescription: "ניהול עובדים מתחיל מהבסיס - הסכם עבודה ברור, מאוזן וחוקי שמגן גם על העסק וגם על העובדים. אני מציעה ליווי וייעוץ אישי בבניית הסכמי העסקה מותאמים לעסק שלך, שמבטיחים עמידה בדרישות החוק, הוגנות כלפי העובדים ושקט נפשי למעסיק. באמצעות ניסיון רב בעולם השכר, דיני העבודה והבקרה, אני עוזרת לנסח חוזים שקופים וברורים שמונעים אי-הבנות ומבססים מערכת יחסים מקצועית ויציבה לטווח ארוך.",
-      benefitsTitle: "השירות כולל",
-      benefits: [
-        "התאמת הסכמי העסקה לצרכים ולמבנה של העסק שלך",
-        "ניסוח סעיפים ברורים בנושאי שכר, שעות עבודה, זכויות סוציאליות ופיצויי פיטורים",
-        "בדיקה ועדכון חוזי עבודה כך שיעמדו במבחן החוק",
-        "שילוב סעיפים המגנים על העסק תוך שמירה על הוגנות ושקיפות מול העובדים",
-        "ייעוץ מעשי לשיפור חוזים קיימים והפחתת סיכונים עתידיים"
-      ],
-      additionalBenefitsTitle: "יתרונות השירות",
-      additionalBenefits: [
-        "חוזים מותאמים אישית לצרכי העסק",
-        "הגנה משפטית ועמידה בדרישות החוק",
-        "ניסוח סעיפים ברורים ומאוזנים לשני הצדדים",
-        "מניעת מחלוקות וסכסוכי עבודה עתידיים",
-        "חיסכון בזמן ובטעויות שנובעות מחוזים כלליים או לא מעודכנים"
-      ],
-      buttonText: "עדכן חוזי עבודה"
-    },
+    // {
+    //   title: "בקרה על תלושי שכר",
+    //   description: "מניעת טעויות ושמירה על חוקיות",
+    //   icon: <FileText className="h-8 w-8 text-orange-500" />,
+    //   subtitle: "לבדוק. לוודא. לעבוד בראש שקט.",
+    //   fullDescription: "ניהול שכר תקין הוא אחד התחומים הרגישים ביותר בעסק - טעויות קטנות עלולות להפוך במהירות להוצאה גדולה או לתביעה מיותרת. אני מציעה שירות בקרה מקיף על מערכת השכר בעסק שלך, המותאם במיוחד לעסקים קטנים ובינוניים. השירות כולל בדיקת תלושי שכר, בחינת הפרשות סוציאליות, עמידה בדרישות החוק והרגולציה, והקמת נהלי בקרה פנימיים שמונעים טעויות מראש. בזכות הניסיון הרב שלי כחשבת ומבקרת שכר, אני יודעת לזהות אי-סדרים, למנוע טעויות חוזרות ולהעניק למעסיק שקט נפשי וביטחון שהכול מתנהל כשורה.",
+    //   benefitsTitle: "השירות כולל",
+    //   benefits: [
+    //     "בדיקה יסודית של תלושי השכר והעמידה בדרישות דיני העבודה",
+    //     "בקרה על חישובי שכר, שעות עבודה, ניכויים והפרשות לפנסיה ולביטוח לאומי",
+    //     "הקמת נהלי בקרה פנימיים והדרכה לתפעול שוטף של מערכת השכר",
+    //     "זיהוי מוקדם של טעויות שעלולות לעלות כסף או לגרור תביעות עובדים",
+    //     "דו\"ח ממצאים ברור עם המלצות מעשיות לשיפור וייעול"
+    //   ],
+    //   additionalBenefitsTitle: "היתרונות שלך",
+    //   additionalBenefits: [
+    //     "מניעת טעויות יקרות וחיסכון בזמן ובכסף",
+    //     "עמידה מלאה בדרישות החוק ובתקנות העבודה",
+    //     "הקמת מערכת בקרה פנימית שמבטיחה דיוק ושקיפות",
+    //     "שמירה על אמון העובדים והגנה על מוניטין העסק"
+    //   ],
+    //   buttonText: "וודא שהכול מחושב נכון"
+    // },
+    // {
+    //   title: "ייעוץ בהסכמי עבודה",
+    //   description: "בניית חוזים מותאמים והוגנים",
+    //   icon: <User className="h-8 w-8 text-orange-500" />,
+    //   subtitle: "לדייק. לבדוק. להעסיק כחוק.",
+    //   fullDescription: "ניהול עובדים מתחיל מהבסיס - הסכם עבודה ברור, מאוזן וחוקי שמגן גם על העסק וגם על העובדים. אני מציעה ליווי וייעוץ אישי בבניית הסכמי העסקה מותאמים לעסק שלך, שמבטיחים עמידה בדרישות החוק, הוגנות כלפי העובדים ושקט נפשי למעסיק. באמצעות ניסיון רב בעולם השכר, דיני העבודה והבקרה, אני עוזרת לנסח חוזים שקופים וברורים שמונעים אי-הבנות ומבססים מערכת יחסים מקצועית ויציבה לטווח ארוך.",
+    //   benefitsTitle: "השירות כולל",
+    //   benefits: [
+    //     "התאמת הסכמי העסקה לצרכים ולמבנה של העסק שלך",
+    //     "ניסוח סעיפים ברורים בנושאי שכר, שעות עבודה, זכויות סוציאליות ופיצויי פיטורים",
+    //     "בדיקה ועדכון חוזי עבודה כך שיעמדו במבחן החוק",
+    //     "שילוב סעיפים המגנים על העסק תוך שמירה על הוגנות ושקיפות מול העובדים",
+    //     "ייעוץ מעשי לשיפור חוזים קיימים והפחתת סיכונים עתידיים"
+    //   ],
+    //   additionalBenefitsTitle: "יתרונות השירות",
+    //   additionalBenefits: [
+    //     "חוזים מותאמים אישית לצרכי העסק",
+    //     "הגנה משפטית ועמידה בדרישות החוק",
+    //     "ניסוח סעיפים ברורים ומאוזנים לשני הצדדים",
+    //     "מניעת מחלוקות וסכסוכי עבודה עתידיים",
+    //     "חיסכון בזמן ובטעויות שנובעות מחוזים כלליים או לא מעודכנים"
+    //   ],
+    //   buttonText: "עדכן חוזי עבודה"
+    // },
     {
       title: "גיוס בהתאמה אישית",
       description: "התאמת עובדים ממאגר אישי",
@@ -318,10 +318,10 @@ export default function Home() {
         </div>
       </section>
        {/* Employee Services */}
-       <section id="employee-services" style={{ paddingTop: '5rem', paddingBottom: '5rem', marginTop: '4rem' }}>
+       <section id="employee-services" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{fontWeight: 500}}>
               לעובדים - לדעת מה מגיע לכם
             </h2>
           </div>
@@ -329,17 +329,17 @@ export default function Home() {
             {employeeServices.map((service, index) => (
               <Card 
                 key={index} 
-                className="h-full hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white cursor-pointer border-0 shadow-lg group"
+                className="h-80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white cursor-pointer border-0 shadow-2xl group"
                 onClick={() => handleServiceClick(service)}
               >
-                <CardContent className="p-8 text-center space-y-4">
-                  <div className="flex justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <div className="p-3 rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors duration-300">
+                <CardContent className="p-8 text-center space-y-6 h-full flex flex-col justify-center">
+                  <div className="flex justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <div className="p-4 rounded-full bg-orange-400 group-hover:bg-orange-100 transition-colors duration-300">
                       {service.icon}
                     </div>
                   </div>
-                  <h3 className="text-xl text-gray-900 font-semibold group-hover:text-orange-600 transition-colors duration-300">{service.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{service.description}</p>
+                  <h3 className="text-xl text-gray-900 font-semibold group-hover:text-orange-600 transition-colors duration-300 mb-4">{service.title}</h3>
+                  <p className="text-gray-600 leading-relaxed flex-grow">{service.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -348,40 +348,47 @@ export default function Home() {
       </section>
 
        {/* Employer Services */}
-       <section id="employer-services" style={{ paddingTop: '5rem', paddingBottom: '5rem', marginTop: '4rem' }}>
+       <section id="employer-services" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="text-center mb-16">
-             <h2 className="text-3xl md:text-4xl text-gray-900 mb-4">
+             <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{fontWeight: 500}}>
                עסקים קטנים ובינוניים - שקט וביטחון בניהול עובדים
              </h2>
            </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {employerServices.map((service, index) => (
-              <Card 
-                key={index} 
-                className="h-full hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white cursor-pointer border-0 shadow-lg group"
-                onClick={() => handleServiceClick(service)}
-              >
-                <CardContent className="p-8 text-center space-y-4">
-                  <div className="flex justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <div className="p-3 rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors duration-300">
-                      {service.icon}
-                    </div>
-                  </div>
-                  <h3 className="text-xl text-gray-900 font-semibold group-hover:text-orange-600 transition-colors duration-300">{service.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{service.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+             {/* Empty column for spacing */}
+             <div></div>
+             
+             {/* Centered service card */}
+             {employerServices.map((service, index) => (
+               <Card 
+                 key={index} 
+                 className="h-80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white cursor-pointer border-0 shadow-2xl group"
+                 onClick={() => handleServiceClick(service)}
+               >
+                 <CardContent className="p-8 text-center space-y-6 h-full flex flex-col justify-center">
+                   <div className="flex justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                     <div className="p-4 rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors duration-300">
+                       {service.icon}
+                     </div>
+                   </div>
+                   <h3 className="text-xl text-gray-900 font-semibold group-hover:text-orange-600 transition-colors duration-300 mb-4">{service.title}</h3>
+                   <p className="text-gray-600 leading-relaxed flex-grow">{service.description}</p>
+                 </CardContent>
+               </Card>
+             ))}
+             
+             {/* Empty column for spacing */}
+             <div></div>
+           </div>
         </div>
       </section>
 
        {/* Blog Section */}
-       <section id="blog" style={{ paddingTop: '5rem', paddingBottom: '5rem', marginTop: '4rem' }}>
+       <section id="blog" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{fontWeight: 500}}>
               עדכונים מהשטח
             </h2>
           </div>
@@ -405,7 +412,7 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center">
-            <Button variant="outline" size="lg" className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white">
+            <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4">
               לקריאת כל הפוסטים
             </Button>
           </div>
@@ -415,7 +422,17 @@ export default function Home() {
        {/* Contact Section */}
        <section id="contact" style={{ paddingTop: '5rem', paddingBottom: '5rem', marginTop: '4rem' }}>
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-           <div className="text-center bg-white/40 backdrop-blur-sm rounded-3xl shadow-lg p-8">
+           <div className="text-center bg-white/40 backdrop-blur-sm rounded-3xl shadow-lg p-8 relative">
+             {/* Artboard Pattern Overlay */}
+             <div 
+               className="absolute inset-0 bg-cover bg-center bg-no-repeat rounded-3xl"
+               style={{ 
+                 backgroundImage: `url(${artboardImage})`,
+                 opacity: 0.08,
+                 zIndex: 1
+               }}
+             ></div>
+             <div className="relative z-10">
           <h2 className="text-3xl md:text-4xl text-gray-900 mb-8">
             בואו נדבר
           </h2>
@@ -451,6 +468,7 @@ export default function Home() {
               דברו איתי ב-WhatsApp
             </a>
            </Button>
+             </div>
            </div>
          </div>
        </section>
@@ -713,7 +731,7 @@ export default function Home() {
 
       {/* Service Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto" dir="rtl">
+        <DialogContent className="max-w-3xl" dir="rtl">
           {selectedService && (
             <>
               <DialogHeader>
@@ -723,7 +741,7 @@ export default function Home() {
                 </DialogTitle>
               </DialogHeader>
               
-              <div className="space-y-6 pt-4 text-right">
+              <div className="space-y-6 pt-4 text-right max-h-[40vh] overflow-y-auto" style={{maxHeight: '70vh'}}>
                 {selectedService.subtitle && (
                   <div className="bg-white p-4 rounded text-right">
                     <p className="text-orange-500 text-right">{selectedService.subtitle}</p>
@@ -731,7 +749,7 @@ export default function Home() {
                 )}
 
                 <div>
-                  <p className="text-gray-700 leading-relaxed text-right">
+                  <p className="text-gray-700 text-sm leading-relaxed text-right">
                     {selectedService.fullDescription}
                   </p>
                 </div>
@@ -744,7 +762,7 @@ export default function Home() {
                     <ul className="space-y-3">
                       {selectedService.benefits.map((benefit, index) => (
                         <li key={index} className="flex items-start gap-3 text-right flex-row-reverse">
-                          <span className="text-gray-700 leading-relaxed flex-1 text-right">{benefit}</span>
+                          <span className="text-gray-700 leading-relaxed flex-1 text-right text-sm">{benefit}</span>
                           <span className="text-orange-500 mt-1 flex-shrink-0">•</span>
                         </li>
                       ))}
@@ -760,7 +778,7 @@ export default function Home() {
                     <ul className="space-y-3">
                       {selectedService.additionalBenefits.map((benefit, index) => (
                         <li key={index} className="flex items-start gap-3 text-right flex-row-reverse">
-                          <span className="text-gray-700 leading-relaxed flex-1 text-right">{benefit}</span>
+                          <span className="text-gray-700 leading-relaxed flex-1 text-right text-sm">{benefit}</span>
                           <span className="text-orange-500 mt-1 flex-shrink-0">•</span>
                         </li>
                       ))}
@@ -768,6 +786,7 @@ export default function Home() {
                   </div>
                 )}
                 
+              </div>
                 <div className="flex justify-center gap-4 pt-6 border-t">
                   <Button 
                     variant="outline" 
@@ -786,7 +805,6 @@ export default function Home() {
                     </a>
                   </Button>
                 </div>
-              </div>
             </>
           )}
         </DialogContent>
