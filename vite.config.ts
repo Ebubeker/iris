@@ -54,7 +54,19 @@
     },
     build: {
       target: 'esnext',
-      outDir: 'build',
+      outDir: 'dist',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom'],
+            ui: ['@radix-ui/react-dialog', '@radix-ui/react-accordion', '@radix-ui/react-alert-dialog'],
+            icons: ['lucide-react'],
+            charts: ['recharts'],
+            forms: ['react-hook-form', 'react-day-picker'],
+          },
+        },
+      },
+      chunkSizeWarningLimit: 1000,
     },
     server: {
       port: 3000,
