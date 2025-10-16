@@ -1,4 +1,4 @@
-import { MessageCircle, Phone, Mail, MapPin, User, FileText, PiggyBank, LogOut, BriefcaseBusiness, X } from 'lucide-react';
+import { MessageCircle, Phone, Mail, MapPin, User, FileText, PiggyBank, LogOut, BriefcaseBusiness, X, GitGraph, Cog } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
@@ -233,569 +233,672 @@ export default function Home() {
   return (
     <div className="min-h-screen relative" dir="rtl">
       {/* Background Image */}
-      <div 
+      <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-60 z-0"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       ></div>
       <div className="relative z-10">
-      {/* Header */}
-      <header className="bg-white backdrop-blur-sm shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <img src={logo} alt="Iris Shani Logo" className="h-12 w-auto" />
-            </div>
-
-            {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-reverse">
-              <a href="#home" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">בית</a>
-              <button 
-                onClick={() => setIsAboutDialogOpen(true)}
-                className="text-gray-700 hover:text-orange-500 transition-colors ml-8"
-              >
-                עלי
-              </button>
-              <a href="#employee-services" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">שירותים לעובדים</a>
-              <a href="#employer-services" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">שירותים למעסיקים</a>
-              <a href="#blog" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">בלוג</a>
-              <a href="#contact" className="text-gray-700 hover:text-orange-500 transition-colors ml-12">צור קשר</a>
-            </nav>
-
-            {/* WhatsApp CTA */}
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
-              <a href="https://wa.me/972508836955" target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="mr-2 h-4 w-4" />
-                צור קשר עכשיו
-              </a>
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section id="home" className="relative bg-gradient-to-br from-orange-50 to-orange-100 py-20">
-        {/* Artboard Background */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-          style={{ 
-            backgroundImage: `url(${artboardImage})`,
-            maskImage: 'linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 100%)',
-            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 100%)'
-          }}
-        ></div>
-        {/* White Overlay for Better Text Readability */}
-        <div className="absolute inset-0 bg-white/20 z-5"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8 animate-fade-in-up">
-              <h1 className="text-4xl md:text-5xl text-gray-900 leading-tight text-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                איריס שני - ליווי מקצועי לעובדים ולמעסיקים
-              </h1>
-              <p className="text-xl text-gray-700 leading-relaxed text-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                לא תמיד קל להבין מה באמת כתוב בתלוש המשכורת או מה מגיע לכם בזמן העבודה, בעת פיטורין או בפרישה.
-                <br /><br />
-                אני כאן כדי לעזור לכם לבדוק, להבין ולפעול - ייעוץ שכר אישי, בדיקת זכויות, ניכויים והפרשות, וליווי מקצועי שיבטיח שתקבלו את כל מה שמגיע לכם - לאורך כל הדרך.
-              </p>
-              <div className="animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-                <Button 
-                  size="lg" 
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4"
-                  asChild
-                >
-                  <a href="#contact">בואו נדבר</a>
-                </Button>
+        {/* Header */}
+        <header className="bg-white backdrop-blur-sm shadow-sm sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              {/* Logo */}
+              <div className="flex-shrink-0">
+                <img src={logo} alt="Iris Shani Logo" className="h-12 w-auto" />
               </div>
-            </div>
-            <div className="lg:order-first animate-fade-in-left" style={{ animationDelay: '0.3s' }}>
-              <img 
-                src={heroImage} 
-                alt="Iris Shani - Professional HR Consultant" 
-                className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-       {/* Employee Services */}
-       <section id="employee-services" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
-         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{fontWeight: 500}}>
-              לעובדים - לדעת מה מגיע לכם
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {employeeServices.map((service, index) => (
-              <Card 
-                key={index} 
-                className="h-80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white cursor-pointer border-0 shadow-2xl group"
-                onClick={() => handleServiceClick(service)}
-              >
-                <CardContent className="p-8 text-center space-y-6 h-full flex flex-col justify-center">
-                  <div className="flex justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <div className="p-4 rounded-full bg-orange-400 group-hover:bg-orange-100 transition-colors duration-300">
-                      {service.icon}
-                    </div>
-                  </div>
-                  <h3 className="text-xl text-gray-900 font-semibold group-hover:text-orange-600 transition-colors duration-300 mb-4">{service.title}</h3>
-                  <p className="text-gray-600 leading-relaxed flex-grow">{service.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
-       {/* Employer Services */}
-       <section id="employer-services" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
-         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-           <div className="text-center mb-16">
-             <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{fontWeight: 500}}>
-               עסקים קטנים ובינוניים - שקט וביטחון בניהול עובדים
-             </h2>
-           </div>
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-             {/* Empty column for spacing */}
-             <div></div>
-             
-             {/* Centered service card */}
-             {employerServices.map((service, index) => (
-               <Card 
-                 key={index} 
-                 className="h-80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white cursor-pointer border-0 shadow-2xl group"
-                 onClick={() => handleServiceClick(service)}
-               >
-                 <CardContent className="p-8 text-center space-y-6 h-full flex flex-col justify-center">
-                   <div className="flex justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                     <div className="p-4 rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors duration-300">
-                       {service.icon}
-                     </div>
-                   </div>
-                   <h3 className="text-xl text-gray-900 font-semibold group-hover:text-orange-600 transition-colors duration-300 mb-4">{service.title}</h3>
-                   <p className="text-gray-600 leading-relaxed flex-grow">{service.description}</p>
-                 </CardContent>
-               </Card>
-             ))}
-             
-             {/* Empty column for spacing */}
-             <div></div>
-           </div>
-        </div>
-      </section>
+              {/* Navigation */}
+              <nav className="hidden md:flex items-center space-x-reverse">
+                <a href="#home" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">בית</a>
+                <button
+                  onClick={() => setIsAboutDialogOpen(true)}
+                  className="text-gray-700 hover:text-orange-500 transition-colors ml-8"
+                >
+                  עלי
+                </button>
+                <a href="#employee-services" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">שירותים לעובדים</a>
+                <a href="#employer-services" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">שירותים למעסיקים</a>
+                <a href="#about" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">אודותיי</a>
+                <a href="#blog" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">בלוג</a>
+                <a href="#contact" className="text-gray-700 hover:text-orange-500 transition-colors ml-12">צור קשר</a>
+              </nav>
 
-       {/* Blog Section */}
-       <section id="blog" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{fontWeight: 500}}>
-              עדכונים מהשטח
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            {blogPosts.map((post, index) => (
-              <Card key={index} className="overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white border-0 shadow-lg group">
-                <div className="aspect-video overflow-hidden relative">
-                  <img 
-                    src={post.image} 
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <CardContent className="p-6 space-y-3">
-                  <p className="text-sm text-orange-500 font-medium">{post.date}</p>
-                  <h3 className="text-lg text-gray-900 leading-tight font-semibold group-hover:text-orange-600 transition-colors duration-300">{post.title}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">{post.excerpt}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          <div className="text-center">
-            <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4">
-              לקריאת כל הפוסטים
-            </Button>
-          </div>
-        </div>
-      </section>
-
-       {/* Contact Section */}
-       <section id="contact" style={{ paddingTop: '5rem', paddingBottom: '5rem', marginTop: '4rem' }}>
-         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-           <div className="text-center bg-white/40 backdrop-blur-sm rounded-3xl shadow-lg p-8 relative">
-             {/* Artboard Pattern Overlay */}
-             <div 
-               className="absolute inset-0 bg-cover bg-center bg-no-repeat rounded-3xl"
-               style={{ 
-                 backgroundImage: `url(${artboardImage})`,
-                 opacity: 0.08,
-                 zIndex: 1
-               }}
-             ></div>
-             <div className="relative z-10">
-          <h2 className="text-3xl md:text-4xl text-gray-900 mb-8">
-            בואו נדבר
-          </h2>
-          <p className="text-xl text-gray-700 mb-12">
-            אני זמינה לשאלות, ליווי וייעוץ - אל תהססו לפנות
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div className="space-y-2">
-              <Phone className="h-8 w-8 text-orange-500 mx-auto" />
-              <p className="text-gray-600">טלפון</p>
-              <p className="text-lg">0508836955</p>
-            </div>
-            <div className="space-y-2">
-              <Mail className="h-8 w-8 text-orange-500 mx-auto" />
-              <p className="text-gray-600">מייל</p>
-              <a href="mailto:info@iris-hr.work" className="text-lg hover:text-orange-500 transition-colors">info@iris-hr.work</a>
-            </div>
-            <div className="space-y-2">
-              <MapPin className="h-8 w-8 text-orange-500 mx-auto" />
-              <p className="text-gray-600">מיקום</p>
-              <p className="text-lg">גבעת ברנר</p>
-            </div>
-          </div>
-
-          <Button 
-            size="lg" 
-            className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4"
-            asChild
-          >
-            <a href="https://wa.me/972508836955" target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="mr-2 h-4 w-4" />
-              דברו איתי ב-WhatsApp
-            </a>
-           </Button>
-             </div>
-           </div>
-         </div>
-       </section>
-
-      {/* About Dialog */}
-      <Dialog open={isAboutDialogOpen} onOpenChange={setIsAboutDialogOpen}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto" dir="rtl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl text-right">
-              נעים להכיר - אני איריס שני
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-6 pt-4 text-right">
-            <div>
-              <p className="text-gray-700 leading-relaxed text-right mb-6">
-                עם יותר מ-20 שנות ניסיון בעולם השכר, יחסי העבודה וגיוס עובדים, למדתי דבר אחד חשוב -
-                מאחורי כל תלוש, חוזה או תהליך גיוס עומד אדם.
-                וכל אדם הוא עולם בפני עצמו, עם צרכים, חלומות ונסיבות חיים ייחודיות.
-              </p>
-              
-              <p className="text-gray-700 leading-relaxed text-right mb-6">
-                המטרה שלי פשוטה - לעשות סדר, להרגיע, ללוות ולהחזיר ביטחון לעובדים ולמעסיקים.
-              </p>
-              
-              <p className="text-gray-700 leading-relaxed text-right mb-6">
-                לעובדים - אני עוזרת להבין את תנאי ההעסקה והשכר, לבדוק זכויות, לנתח תלושי שכר ולהתנהל נכון מול ביטוח לאומי ומס הכנסה.
-                למעסיקים - אני מציעה ליווי מקצועי בגיוס והשמה, בבניית חוזי עבודה ובהתנהלות שוטפת עם עובדים - כאילו יש להם מנהלת משאבי אנוש צמודה לעסק.
-              </p>
-              
-              <p className="text-gray-700 leading-relaxed text-right mb-6">
-                אני רואה בעצמי גשר בין אנשים לעולם העבודה -
-                "מתווכת אמון" שמחברת בין מעסיקים הוגנים שאני מאמינה בהם לבין עובדים שאני מזהה אצלם את הפוטנציאל, המחויבות והערך האנושי.
-              </p>
-              
-              <p className="text-gray-700 leading-relaxed text-right">
-                הכול נעשה בגישה אישית, באמפתיה מלאה, בשפה פשוטה וברורה -
-                ובמחירים נגישים שמתאימים לעובדים ולעסקים קטנים ובינוניים.
-              </p>
-            </div>
-                
-            <div className="flex justify-center pt-6 border-t">
-              <Button 
-                className="bg-orange-500 hover:bg-orange-600 text-white px-8 mr-4"
-                asChild
-              >
+              {/* WhatsApp CTA */}
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
                 <a href="https://wa.me/972508836955" target="_blank" rel="noopener noreferrer">
                   <MessageCircle className="mr-2 h-4 w-4" />
-                  בואו נדבר
+                  צור קשר עכשיו
                 </a>
               </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => setIsAboutDialogOpen(false)}
-                className="px-8"
-              >
-                סגור
-              </Button>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </header>
 
-      {/* Terms of Service Dialog */}
-      <Dialog open={isTermsDialogOpen} onOpenChange={setIsTermsDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" dir="rtl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl text-right">
-              תנאי שימוש - אתר iris-hr.work
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-6 pt-4 text-right">
-            <div>
-              <p className="text-gray-700 leading-relaxed text-right">
-                ברוכים הבאים לאתר של איריס שני - ייעוץ לעובדים ולמעסיקים (להלן: "האתר").
-                השימוש באתר זה כפוף לתנאים המפורטים להלן.
-                אנא קרא אותם בקפידה, שכן השימוש באתר מעיד על הסכמתך להם.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">1. מטרת האתר</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                האתר נועד לספק מידע כללי, טיפים מקצועיים ותוכן כללי בנושאי דיני עבודה, שכר, זכויות עובדים ויחסי עבודה.
-                התכנים באתר ניתנים לצורכי ידע והכוונה בלבד, ואינם מהווים ייעוץ משפטי, חשבונאי או מקצועי מכל סוג.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">2. אין באמור באתר משום תחליף לייעוץ משפטי</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                התכנים באתר אינם מהווים תחליף לייעוץ אישי מקצועי או משפטי.
-                איריס שני אינה אחראית לכל פעולה שתבוצע על סמך מידע המתפרסם באתר, וכל משתמש נושא באחריות המלאה לשימוש שהוא עושה בתוכן.
-                מומלץ לפנות באופן אישי לייעוץ פרטני לפני קבלת החלטות הקשורות לדיני עבודה, שכר או מיסוי.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">3. אחריות מוגבלת</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                האתר והתכנים בו ניתנים כפי שהם ("As-Is") ללא אחריות מכל סוג, מפורשת או משתמעת.
-                איריס שני לא תישא באחריות לכל נזק, ישיר או עקיף, שייגרם עקב שימוש במידע שבאתר או בשירותים חיצוניים המקושרים אליו.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">4. קניין רוחני</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                כל הזכויות בתכנים, בטקסטים, בעיצוב, בלוגו ובכל חומר חזותי באתר שמורות לאיריס שני.
-                אין להעתיק, לשכפל, להפיץ או לעשות שימוש מסחרי בתכני האתר ללא אישור מראש ובכתב.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">5. קישורים חיצוניים</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                האתר עשוי להכיל קישורים לאתרים אחרים לצורך העשרת הידע בלבד.
-                אין לראות בהצגת קישורים אלה כהמלצה או אחריות כלשהי לתוכן באתרים חיצוניים.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">6. יצירת קשר</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                לשאלות, פניות או ייעוץ אישי ניתן ליצור קשר עם איריס שני בכתובת הדוא"ל:
-                info@iris-hr.work
-                או בטלפון: 050-8836955
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">7. שינוי תנאים</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                איריס שני שומרת לעצמה את הזכות לעדכן מעת לעת את תנאי השימוש באתר.
-                הגרסה העדכנית תפורסם תמיד בעמוד זה, והשימוש באתר לאחר עדכון כזה ייחשב כהסכמה לתנאים המעודכנים.
-              </p>
-            </div>
-
-            <div className="border-t pt-6 text-center">
-              <p className="text-gray-600 text-sm text-center">
-                © כל הזכויות שמורות לאיריס שני - ייעוץ לעובדים ולמעסיקים
-              </p>
-              <p className="text-gray-600 text-sm text-center">www.iris-hr.work</p>
-            </div>
-                
-            <div className="flex justify-center pt-4">
-              <Button 
-                variant="outline" 
-                onClick={() => setIsTermsDialogOpen(false)}
-                className="px-8"
-              >
-                סגור
-              </Button>
+        {/* Hero Section */}
+        <section id="home" className="relative bg-gradient-to-br from-orange-50 to-orange-100 py-20">
+          {/* Artboard Background */}
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+            style={{
+              backgroundImage: `url(${artboardImage})`,
+              maskImage: 'linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 100%)',
+              WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 100%)'
+            }}
+          ></div>
+          {/* White Overlay for Better Text Readability */}
+          <div className="absolute inset-0 bg-white/20 z-5"></div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-8 animate-fade-in-up">
+                <h1 className="text-4xl md:text-5xl text-gray-900 leading-tight text-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                  איריס שני - ליווי מקצועי לעובדים ולמעסיקים
+                </h1>
+                <p className="text-xl text-gray-700 leading-relaxed text-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                  לא תמיד קל להבין מה באמת כתוב בתלוש המשכורת או מה מגיע לכם בזמן העבודה, בעת פיטורין או בפרישה.
+                  <br /><br />
+                  אני כאן כדי לעזור לכם לבדוק, להבין ולפעול - ייעוץ שכר אישי, בדיקת זכויות, ניכויים והפרשות, וליווי מקצועי שיבטיח שתקבלו את כל מה שמגיע לכם - לאורך כל הדרך.
+                </p>
+                <div className="animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+                  <Button
+                    size="lg"
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4"
+                    asChild
+                  >
+                    <a href="#contact">בואו נדבר</a>
+                  </Button>
+                </div>
+              </div>
+              <div className="lg:order-first animate-fade-in-left" style={{ animationDelay: '0.3s' }}>
+                <img
+                  src={heroImage}
+                  alt="Iris Shani - Professional HR Consultant"
+                  className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
+                />
+              </div>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Privacy Policy Dialog */}
-      <Dialog open={isPrivacyDialogOpen} onOpenChange={setIsPrivacyDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" dir="rtl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl text-right">
-              מדיניות פרטיות - אתר iris-hr.work
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-6 pt-4 text-right">
-            <div>
-              <p className="text-gray-700 leading-relaxed text-right">
-                ברוכים הבאים לאתר של איריס שני - ייעוץ לעובדים ולמעסיקים (להלן: "האתר").
-                שמירה על פרטיות המבקרים והלקוחות שלנו חשובה לנו מאוד. מטרת מסמך זה היא להסביר כיצד אנו אוספים, משתמשים ושומרים על המידע האישי הנמסר לנו דרך האתר.
-              </p>
+        </section>
+        {/* Employee Services */}
+        <section id="employee-services" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontWeight: 500 }}>
+                לעובדים - לדעת מה מגיע לכם
+              </h2>
             </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">1. איזה מידע אנו אוספים?</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                המידע שאנו עשויים לאסוף כולל: שם מלא, מספר טלפון, כתובת דוא"ל, ומידע נוסף שתבחרו לשתף עימנו בעת יצירת קשר או קביעת פגישה.
-                בנוסף, אנו עשויים לאסוף מידע טכני כללי כגון כתובת IP וסוג הדפדפן לצורכי שיפור חוויית הגלישה באתר.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">2. כיצד אנו משתמשים במידע?</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                המידע שאנו אוספים משמש אותנו לצורך מתן שירות מקצועי, יצירת קשר עם לקוחות פוטנציאליים, קביעת פגישות וייעוץ.
-                אנו לא נעשה שימוש במידע שלכם למטרות שיווק או פרסום ללא הסכמתכם המפורשת.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">3. שמירה ואבטחת מידע</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                אנו נוקטים אמצעים סבירים לשמירה על המידע שלכם באופן מאובטח, אולם אין באפשרותנו להבטיח אבטחה מוחלטת.
-                המידע שלכם יישמר אצלנו כל עוד הוא נדרש למתן השירות או לפי הוראות החוק.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">4. העברת מידע לצדדים שלישיים</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                אנו לא נמכור, נשכיר או נעביר את המידע האישי שלכם לצדדים שלישיים, אלא במקרים הבאים:
-                כאשר אתם נותנים הסכמה מפורשת לכך, כאשר זה נדרש על פי חוק, או כאשר זה הכרחי למתן השירות המבוקש על ידכם.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">5. זכויותיכם</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                לכם הזכות לגשת למידע שלכם, לבקש לעדכן או למחוק אותו.
-                לבקשות כאלה, אנא פנו אלינו בכתובת: info@iris-hr.work או בטלפון: 050-8836955.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">6. עוגיות (Cookies)</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                האתר עשוי להשתמש בעוגיות טכניות לצורך שיפור חוויית הגלישה.
-                אנו לא משתמשים בעוגיות למעקב או לפרסום ממוקד ללא הסכמתכם.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">7. שינויים במדיניות הפרטיות</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                אנו שומרים לעצמנו את הזכות לעדכן מדיניות פרטיות זו מעת לעת.
-                כל שינוי יפורסם בעמוד זה, והשימוש באתר לאחר עדכון המדיניות ייחשב כהסכמה לתנאים החדשים.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg text-gray-900 mb-3 text-right">8. יצירת קשר</h4>
-              <p className="text-gray-700 leading-relaxed text-right">
-                לשאלות או הבהרות לגבי מדיניות פרטיות זו, ניתן ליצור קשר בכתובת:
-                info@iris-hr.work או בטלפון: 050-8836955.
-              </p>
-            </div>
-
-            <div className="border-t pt-6 text-center">
-              <p className="text-gray-600 text-sm text-center">
-                © כל הזכויות שמורות לאיריס שני - ייעוץ לעובדים ולמעסיקים
-              </p>
-              <p className="text-gray-600 text-sm text-center">www.iris-hr.work</p>
-            </div>
-                
-            <div className="flex justify-center pt-4">
-              <Button 
-                variant="outline" 
-                onClick={() => setIsPrivacyDialogOpen(false)}
-                className="px-8"
-              >
-                סגור
-              </Button>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {employeeServices.map((service, index) => (
+                <Card
+                  key={index}
+                  className="h-80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white cursor-pointer border-0 shadow-2xl group"
+                  onClick={() => handleServiceClick(service)}
+                >
+                  <CardContent className="p-8 text-center space-y-6 h-full flex flex-col justify-center">
+                    <div className="flex justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <div className="p-4 rounded-full bg-orange-400 group-hover:bg-orange-100 transition-colors duration-300">
+                        {service.icon}
+                      </div>
+                    </div>
+                    <h3 className="text-xl text-gray-900 font-semibold group-hover:text-orange-600 transition-colors duration-300 mb-4">{service.title}</h3>
+                    <p className="text-gray-600 leading-relaxed flex-grow">{service.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </section>
 
-      {/* Service Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-3xl" dir="rtl">
-          {selectedService && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="text-2xl text-right flex items-center justify-end gap-3 flex-row-reverse">
-                  {selectedService.icon}
-                  <span>{selectedService.title}</span>
-                </DialogTitle>
-              </DialogHeader>
-              
-              <div className="space-y-6 pt-4 text-right max-h-[40vh] overflow-y-auto" style={{maxHeight: '70vh'}}>
-                {selectedService.subtitle && (
-                  <div className="bg-white p-4 rounded text-right">
-                    <p className="text-orange-500 text-right">{selectedService.subtitle}</p>
-                  </div>
-                )}
+        {/* Employer Services */}
+        <section id="employer-services" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontWeight: 500 }}>
+                עסקים קטנים ובינוניים - שקט וביטחון בניהול עובדים
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Empty column for spacing */}
+              <div className='max-md:hidden'></div>
 
-                <div>
-                  <p className="text-gray-700 text-sm leading-relaxed text-right">
-                    {selectedService.fullDescription}
+              {/* Centered service card */}
+              {employerServices.map((service, index) => (
+                <Card
+                  key={index}
+                  className="h-80 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white cursor-pointer border-0 shadow-2xl group"
+                  onClick={() => handleServiceClick(service)}
+                >
+                  <CardContent className="p-8 text-center space-y-6 h-full flex flex-col justify-center">
+                    <div className="flex justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <div className="p-4 rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors duration-300">
+                        {service.icon}
+                      </div>
+                    </div>
+                    <h3 className="text-xl text-gray-900 font-semibold group-hover:text-orange-600 transition-colors duration-300 mb-4">{service.title}</h3>
+                    <p className="text-gray-600 leading-relaxed flex-grow">{service.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+
+              {/* Empty column for spacing */}
+              <div className='max-md:hidden'></div>
+            </div>
+          </div>
+        </section>
+
+        {/* About Me Section */}
+        <section id="about" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontWeight: 500 }}>
+                נעים להכיר - אני איריס שני
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+              {/* Profile Image */}
+              <div className="order-2 lg:order-1">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 rounded-2xl transform rotate-3"></div>
+                  <img
+                    src={heroImage}
+                    alt="איריס שני - מומחית משאבי אנוש"
+                    className="relative rounded-2xl shadow-2xl w-full h-[500px] object-cover"
+                  />
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="order-1 lg:order-2 space-y-6">
+                <div className="bg-white p-8 rounded-2xl shadow-lg border border-orange-100">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 text-right">הניסיון שלי</h3>
+                  <p className="text-gray-700 leading-relaxed text-right text-lg mb-4">
+                    עם יותר מ-20 שנות ניסיון בעולם השכר, יחסי העבודה וגיוס עובדים, למדתי דבר אחד חשוב -
+                    מאחורי כל תלוש, חוזה או תהליך גיוס עומד אדם.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed text-right text-lg">
+                    וכל אדם הוא עולם בפני עצמו, עם צרכים, חלומות ונסיבות חיים ייחודיות.
                   </p>
                 </div>
 
-                {selectedService.benefits && (
-                  <div>
-                    <h4 className="text-lg text-gray-900 mb-3 text-right">
-                      {selectedService.benefitsTitle || "היתרונות שלכם"}
-                    </h4>
-                    <ul className="space-y-3">
-                      {selectedService.benefits.map((benefit, index) => (
-                        <li key={index} className="flex items-start gap-3 text-right flex-row-reverse">
-                          <span className="text-gray-700 leading-relaxed flex-1 text-right text-sm">{benefit}</span>
-                          <span className="text-orange-500 mt-1 flex-shrink-0">•</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {selectedService.additionalBenefits && (
-                  <div>
-                    <h4 className="text-lg text-gray-900 mb-3 text-right">
-                      {selectedService.additionalBenefitsTitle || "יתרונות נוספים"}
-                    </h4>
-                    <ul className="space-y-3">
-                      {selectedService.additionalBenefits.map((benefit, index) => (
-                        <li key={index} className="flex items-start gap-3 text-right flex-row-reverse">
-                          <span className="text-gray-700 leading-relaxed flex-1 text-right text-sm">{benefit}</span>
-                          <span className="text-orange-500 mt-1 flex-shrink-0">•</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                
+                <div className="bg-white p-8 rounded-2xl shadow-lg border border-orange-100">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 text-right">המטרה שלי</h3>
+                  <p className="text-gray-700 leading-relaxed text-right text-lg">
+                    לעשות סדר, להרגיע, ללוות ולהחזיר ביטחון לעובדים ולמעסיקים.
+                    אני רואה בעצמי גשר בין אנשים לעולם העבודה - "מתווכת אמון" שמחברת בין מעסיקים הוגנים
+                    שאני מאמינה בהם לבין עובדים שאני מזהה אצלם את הפוטנציאל, המחויבות והערך האנושי.
+                  </p>
+                </div>
               </div>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <div className="bg-white p-6 rounded-xl shadow-lg text-center border border-orange-100">
+                <div className="flex justify-center items-center mb-4">
+                  <div className="bg-orange-500 rounded-full flex items-center justify-center" style={{ borderRadius: '50%', width: '64px', height: '64px' }}>
+                    <Cog className="h-16 w-16 text-white" />
+                  </div>
+                </div>
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-orange-500 text-4xl font-bold" style={{ fontWeight: 600 }}>20+</span>
+                </div>
+                <h4 className="text-xl font-semibold text-gray-900 mb-2">שנות ניסיון</h4>
+                <p className="text-gray-600">בתחום השכר ויחסי עבודה</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl shadow-lg text-center border border-orange-100">
+                <div className="flex justify-center items-center mb-4">
+                  <div className="bg-orange-500 rounded-full flex items-center justify-center" style={{ borderRadius: '50%', width: '64px', height: '64px' }}>
+                    <BriefcaseBusiness className="h-16 w-16 text-white" />
+                  </div>
+                </div>
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-orange-500 text-4xl font-bold" style={{ fontWeight: 600 }}>500+</span>
+                </div>
+                <h4 className="text-xl font-semibold text-gray-900 mb-2">עובדים</h4>
+                <p className="text-gray-600">שקיבלו ליווי מקצועי</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-xl shadow-lg text-center border border-orange-100">
+                <div className="flex justify-center items-center mb-4">
+                  <div className="bg-orange-500 rounded-full flex items-center justify-center" style={{ borderRadius: '50%', width: '64px', height: '64px' }}>
+                    <GitGraph className="h-16 w-16 text-white" />
+                  </div>
+                </div>
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-orange-500 text-4xl font-bold" style={{ fontWeight: 600 }}>100%</span>
+                </div>
+                <h4 className="text-xl font-semibold text-gray-900 mb-2">מחויבות</h4>
+                <p className="text-gray-600">להצלחת הלקוחות שלי</p>
+              </div>
+            </div>
+
+
+            {/* Call to Action */}
+            {/* <div className="text-center mt-12">
+             <Button 
+               size="lg" 
+               className="bg-orange-500 hover:bg-orange-600 text-white px-12 py-4 text-lg"
+               asChild
+             >
+               <a href="#contact">בואו נדבר ונכיר</a>
+             </Button>
+           </div> */}
+          </div>
+        </section>
+
+        {/* Blog Section */}
+        <section id="blog" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontWeight: 500 }}>
+                עדכונים מהשטח
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              {blogPosts.map((post, index) => (
+                <Card key={index} className="overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white border-0 shadow-lg group">
+                  <div className="aspect-video overflow-hidden relative">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                  <CardContent className="p-6 space-y-3">
+                    <p className="text-sm text-orange-500 font-medium">{post.date}</p>
+                    <h3 className="text-lg text-gray-900 leading-tight font-semibold group-hover:text-orange-600 transition-colors duration-300">{post.title}</h3>
+                    <p className="text-gray-600 text-sm leading-relaxed">{post.excerpt}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div className="text-center">
+              <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4">
+                לקריאת כל הפוסטים
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" style={{ paddingTop: '5rem', paddingBottom: '5rem', marginTop: '4rem' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center bg-white/40 backdrop-blur-sm rounded-3xl shadow-lg p-8 relative">
+              {/* Artboard Pattern Overlay */}
+              <div
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat rounded-3xl"
+                style={{
+                  backgroundImage: `url(${artboardImage})`,
+                  opacity: 0.08,
+                  zIndex: 1
+                }}
+              ></div>
+              <div className="relative z-10">
+                <h2 className="text-3xl md:text-4xl text-gray-900 mb-8">
+                  בואו נדבר
+                </h2>
+                <p className="text-xl text-gray-700 mb-12">
+                  אני זמינה לשאלות, ליווי וייעוץ - אל תהססו לפנות
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                  <div className="space-y-2">
+                    <Phone className="h-8 w-8 text-orange-500 mx-auto" />
+                    <p className="text-gray-600">טלפון</p>
+                    <p className="text-lg">0508836955</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Mail className="h-8 w-8 text-orange-500 mx-auto" />
+                    <p className="text-gray-600">מייל</p>
+                    <a href="mailto:info@iris-hr.work" className="text-lg hover:text-orange-500 transition-colors">info@iris-hr.work</a>
+                  </div>
+                  <div className="space-y-2">
+                    <MapPin className="h-8 w-8 text-orange-500 mx-auto" />
+                    <p className="text-gray-600">מיקום</p>
+                    <p className="text-lg">גבעת ברנר</p>
+                  </div>
+                </div>
+
+                <Button
+                  size="lg"
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4"
+                  asChild
+                >
+                  <a href="https://wa.me/972508836955" target="_blank" rel="noopener noreferrer">
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    דברו איתי ב-WhatsApp
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* About Dialog */}
+        <Dialog open={isAboutDialogOpen} onOpenChange={setIsAboutDialogOpen}>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto" dir="rtl">
+            <DialogHeader>
+              <DialogTitle className="text-2xl text-right">
+                נעים להכיר - אני איריס שני
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-6 pt-4 text-right">
+              <div>
+                <p className="text-gray-700 leading-relaxed text-right mb-6">
+                  עם יותר מ-20 שנות ניסיון בעולם השכר, יחסי העבודה וגיוס עובדים, למדתי דבר אחד חשוב -
+                  מאחורי כל תלוש, חוזה או תהליך גיוס עומד אדם.
+                  וכל אדם הוא עולם בפני עצמו, עם צרכים, חלומות ונסיבות חיים ייחודיות.
+                </p>
+
+                <p className="text-gray-700 leading-relaxed text-right mb-6">
+                  המטרה שלי פשוטה - לעשות סדר, להרגיע, ללוות ולהחזיר ביטחון לעובדים ולמעסיקים.
+                </p>
+
+                <p className="text-gray-700 leading-relaxed text-right mb-6">
+                  לעובדים - אני עוזרת להבין את תנאי ההעסקה והשכר, לבדוק זכויות, לנתח תלושי שכר ולהתנהל נכון מול ביטוח לאומי ומס הכנסה.
+                  למעסיקים - אני מציעה ליווי מקצועי בגיוס והשמה, בבניית חוזי עבודה ובהתנהלות שוטפת עם עובדים - כאילו יש להם מנהלת משאבי אנוש צמודה לעסק.
+                </p>
+
+                <p className="text-gray-700 leading-relaxed text-right mb-6">
+                  אני רואה בעצמי גשר בין אנשים לעולם העבודה -
+                  "מתווכת אמון" שמחברת בין מעסיקים הוגנים שאני מאמינה בהם לבין עובדים שאני מזהה אצלם את הפוטנציאל, המחויבות והערך האנושי.
+                </p>
+
+                <p className="text-gray-700 leading-relaxed text-right">
+                  הכול נעשה בגישה אישית, באמפתיה מלאה, בשפה פשוטה וברורה -
+                  ובמחירים נגישים שמתאימים לעובדים ולעסקים קטנים ובינוניים.
+                </p>
+              </div>
+
+              <div className="flex justify-center pt-6 border-t">
+                <Button
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 mr-4"
+                  asChild
+                >
+                  <a href="https://wa.me/972508836955" target="_blank" rel="noopener noreferrer">
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    בואו נדבר
+                  </a>
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAboutDialogOpen(false)}
+                  className="px-8"
+                >
+                  סגור
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Terms of Service Dialog */}
+        <Dialog open={isTermsDialogOpen} onOpenChange={setIsTermsDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" dir="rtl">
+            <DialogHeader>
+              <DialogTitle className="text-2xl text-right">
+                תנאי שימוש - אתר iris-hr.work
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-6 pt-4 text-right">
+              <div>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  ברוכים הבאים לאתר של איריס שני - ייעוץ לעובדים ולמעסיקים (להלן: "האתר").
+                  השימוש באתר זה כפוף לתנאים המפורטים להלן.
+                  אנא קרא אותם בקפידה, שכן השימוש באתר מעיד על הסכמתך להם.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">1. מטרת האתר</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  האתר נועד לספק מידע כללי, טיפים מקצועיים ותוכן כללי בנושאי דיני עבודה, שכר, זכויות עובדים ויחסי עבודה.
+                  התכנים באתר ניתנים לצורכי ידע והכוונה בלבד, ואינם מהווים ייעוץ משפטי, חשבונאי או מקצועי מכל סוג.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">2. אין באמור באתר משום תחליף לייעוץ משפטי</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  התכנים באתר אינם מהווים תחליף לייעוץ אישי מקצועי או משפטי.
+                  איריס שני אינה אחראית לכל פעולה שתבוצע על סמך מידע המתפרסם באתר, וכל משתמש נושא באחריות המלאה לשימוש שהוא עושה בתוכן.
+                  מומלץ לפנות באופן אישי לייעוץ פרטני לפני קבלת החלטות הקשורות לדיני עבודה, שכר או מיסוי.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">3. אחריות מוגבלת</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  האתר והתכנים בו ניתנים כפי שהם ("As-Is") ללא אחריות מכל סוג, מפורשת או משתמעת.
+                  איריס שני לא תישא באחריות לכל נזק, ישיר או עקיף, שייגרם עקב שימוש במידע שבאתר או בשירותים חיצוניים המקושרים אליו.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">4. קניין רוחני</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  כל הזכויות בתכנים, בטקסטים, בעיצוב, בלוגו ובכל חומר חזותי באתר שמורות לאיריס שני.
+                  אין להעתיק, לשכפל, להפיץ או לעשות שימוש מסחרי בתכני האתר ללא אישור מראש ובכתב.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">5. קישורים חיצוניים</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  האתר עשוי להכיל קישורים לאתרים אחרים לצורך העשרת הידע בלבד.
+                  אין לראות בהצגת קישורים אלה כהמלצה או אחריות כלשהי לתוכן באתרים חיצוניים.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">6. יצירת קשר</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  לשאלות, פניות או ייעוץ אישי ניתן ליצור קשר עם איריס שני בכתובת הדוא"ל:
+                  info@iris-hr.work
+                  או בטלפון: 050-8836955
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">7. שינוי תנאים</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  איריס שני שומרת לעצמה את הזכות לעדכן מעת לעת את תנאי השימוש באתר.
+                  הגרסה העדכנית תפורסם תמיד בעמוד זה, והשימוש באתר לאחר עדכון כזה ייחשב כהסכמה לתנאים המעודכנים.
+                </p>
+              </div>
+
+              <div className="border-t pt-6 text-center">
+                <p className="text-gray-600 text-sm text-center">
+                  © כל הזכויות שמורות לאיריס שני - ייעוץ לעובדים ולמעסיקים
+                </p>
+                <p className="text-gray-600 text-sm text-center">www.iris-hr.work</p>
+              </div>
+
+              <div className="flex justify-center pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsTermsDialogOpen(false)}
+                  className="px-8"
+                >
+                  סגור
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Privacy Policy Dialog */}
+        <Dialog open={isPrivacyDialogOpen} onOpenChange={setIsPrivacyDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" dir="rtl">
+            <DialogHeader>
+              <DialogTitle className="text-2xl text-right">
+                מדיניות פרטיות - אתר iris-hr.work
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-6 pt-4 text-right">
+              <div>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  ברוכים הבאים לאתר של איריס שני - ייעוץ לעובדים ולמעסיקים (להלן: "האתר").
+                  שמירה על פרטיות המבקרים והלקוחות שלנו חשובה לנו מאוד. מטרת מסמך זה היא להסביר כיצד אנו אוספים, משתמשים ושומרים על המידע האישי הנמסר לנו דרך האתר.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">1. איזה מידע אנו אוספים?</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  המידע שאנו עשויים לאסוף כולל: שם מלא, מספר טלפון, כתובת דוא"ל, ומידע נוסף שתבחרו לשתף עימנו בעת יצירת קשר או קביעת פגישה.
+                  בנוסף, אנו עשויים לאסוף מידע טכני כללי כגון כתובת IP וסוג הדפדפן לצורכי שיפור חוויית הגלישה באתר.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">2. כיצד אנו משתמשים במידע?</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  המידע שאנו אוספים משמש אותנו לצורך מתן שירות מקצועי, יצירת קשר עם לקוחות פוטנציאליים, קביעת פגישות וייעוץ.
+                  אנו לא נעשה שימוש במידע שלכם למטרות שיווק או פרסום ללא הסכמתכם המפורשת.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">3. שמירה ואבטחת מידע</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  אנו נוקטים אמצעים סבירים לשמירה על המידע שלכם באופן מאובטח, אולם אין באפשרותנו להבטיח אבטחה מוחלטת.
+                  המידע שלכם יישמר אצלנו כל עוד הוא נדרש למתן השירות או לפי הוראות החוק.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">4. העברת מידע לצדדים שלישיים</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  אנו לא נמכור, נשכיר או נעביר את המידע האישי שלכם לצדדים שלישיים, אלא במקרים הבאים:
+                  כאשר אתם נותנים הסכמה מפורשת לכך, כאשר זה נדרש על פי חוק, או כאשר זה הכרחי למתן השירות המבוקש על ידכם.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">5. זכויותיכם</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  לכם הזכות לגשת למידע שלכם, לבקש לעדכן או למחוק אותו.
+                  לבקשות כאלה, אנא פנו אלינו בכתובת: info@iris-hr.work או בטלפון: 050-8836955.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">6. עוגיות (Cookies)</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  האתר עשוי להשתמש בעוגיות טכניות לצורך שיפור חוויית הגלישה.
+                  אנו לא משתמשים בעוגיות למעקב או לפרסום ממוקד ללא הסכמתכם.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">7. שינויים במדיניות הפרטיות</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  אנו שומרים לעצמנו את הזכות לעדכן מדיניות פרטיות זו מעת לעת.
+                  כל שינוי יפורסם בעמוד זה, והשימוש באתר לאחר עדכון המדיניות ייחשב כהסכמה לתנאים החדשים.
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-lg text-gray-900 mb-3 text-right">8. יצירת קשר</h4>
+                <p className="text-gray-700 leading-relaxed text-right">
+                  לשאלות או הבהרות לגבי מדיניות פרטיות זו, ניתן ליצור קשר בכתובת:
+                  info@iris-hr.work או בטלפון: 050-8836955.
+                </p>
+              </div>
+
+              <div className="border-t pt-6 text-center">
+                <p className="text-gray-600 text-sm text-center">
+                  © כל הזכויות שמורות לאיריס שני - ייעוץ לעובדים ולמעסיקים
+                </p>
+                <p className="text-gray-600 text-sm text-center">www.iris-hr.work</p>
+              </div>
+
+              <div className="flex justify-center pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsPrivacyDialogOpen(false)}
+                  className="px-8"
+                >
+                  סגור
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Service Dialog */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="max-w-3xl" dir="rtl">
+            {selectedService && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="text-2xl text-right flex items-center justify-end gap-3 flex-row-reverse">
+                    {selectedService.icon}
+                    <span>{selectedService.title}</span>
+                  </DialogTitle>
+                </DialogHeader>
+
+                <div className="space-y-6 pt-4 text-right max-h-[40vh] overflow-y-auto" style={{ maxHeight: '70vh' }}>
+                  {selectedService.subtitle && (
+                    <div className="bg-white p-4 rounded text-right">
+                      <p className="text-orange-500 text-right">{selectedService.subtitle}</p>
+                    </div>
+                  )}
+
+                  <div>
+                    <p className="text-gray-700 text-sm leading-relaxed text-right">
+                      {selectedService.fullDescription}
+                    </p>
+                  </div>
+
+                  {selectedService.benefits && (
+                    <div>
+                      <h4 className="text-lg text-gray-900 mb-3 text-right">
+                        {selectedService.benefitsTitle || "היתרונות שלכם"}
+                      </h4>
+                      <ul className="space-y-3">
+                        {selectedService.benefits.map((benefit, index) => (
+                          <li key={index} className="flex items-start gap-3 text-right flex-row-reverse">
+                            <span className="text-gray-700 leading-relaxed flex-1 text-right text-sm">{benefit}</span>
+                            <span className="text-orange-500 mt-1 flex-shrink-0">•</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {selectedService.additionalBenefits && (
+                    <div>
+                      <h4 className="text-lg text-gray-900 mb-3 text-right">
+                        {selectedService.additionalBenefitsTitle || "יתרונות נוספים"}
+                      </h4>
+                      <ul className="space-y-3">
+                        {selectedService.additionalBenefits.map((benefit, index) => (
+                          <li key={index} className="flex items-start gap-3 text-right flex-row-reverse">
+                            <span className="text-gray-700 leading-relaxed flex-1 text-right text-sm">{benefit}</span>
+                            <span className="text-orange-500 mt-1 flex-shrink-0">•</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                </div>
                 <div className="flex justify-center gap-4 pt-6 border-t">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={() => setIsDialogOpen(false)}
                     className="px-8"
                   >
                     סגור
                   </Button>
-                  <Button 
+                  <Button
                     className="bg-orange-500 hover:bg-orange-600 text-white px-8"
                     asChild
                   >
@@ -805,64 +908,65 @@ export default function Home() {
                     </a>
                   </Button>
                 </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div className="text-center md:text-right">
-              <h3 className="text-lg mb-4">צור קשר</h3>
-              <p className="text-gray-300">טלפון: 0508836955</p>
-              <p className="text-gray-300">מייל: info@iris-hr.work</p>
-              <p className="text-gray-300">מיקום: גבעת ברנר</p>
-            </div>
-            <div className="text-center">
-              <h3 className="text-lg mb-4">קישורים</h3>
-              <div className="space-y-2">
-                <p>
-                  <button 
-                    onClick={() => setIsAboutDialogOpen(true)}
-                    className="text-gray-300 hover:text-orange-500 transition-colors"
-                  >
-                    עלי
-                  </button>
-                </p>
-                <p><a href="#employee-services" className="text-gray-300 hover:text-orange-500 transition-colors">שירותים לעובדים</a></p>
-                <p><a href="#employer-services" className="text-gray-300 hover:text-orange-500 transition-colors">שירותים למעסיקים</a></p>
-                <p><a href="#blog" className="text-gray-300 hover:text-orange-500 transition-colors">בלוג</a></p>
+        {/* Footer */}
+        <footer className="bg-gray-900 text-white py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+              <div className="text-center md:text-right">
+                <h3 className="text-lg mb-4">צור קשר</h3>
+                <p className="text-gray-300">טלפון: 0508836955</p>
+                <p className="text-gray-300">מייל: info@iris-hr.work</p>
+                <p className="text-gray-300">מיקום: גבעת ברנר</p>
+              </div>
+              <div className="text-center">
+                <h3 className="text-lg mb-4">קישורים</h3>
+                <div className="space-y-2">
+                  <p>
+                    <button
+                      onClick={() => setIsAboutDialogOpen(true)}
+                      className="text-gray-300 hover:text-orange-500 transition-colors"
+                    >
+                      עלי
+                    </button>
+                  </p>
+                  <p><a href="#employee-services" className="text-gray-300 hover:text-orange-500 transition-colors">שירותים לעובדים</a></p>
+                  <p><a href="#employer-services" className="text-gray-300 hover:text-orange-500 transition-colors">שירותים למעסיקים</a></p>
+                  <p><a href="#about" className="text-gray-300 hover:text-orange-500 transition-colors">אודותיי</a></p>
+                  <p><a href="#blog" className="text-gray-300 hover:text-orange-500 transition-colors">בלוג</a></p>
+                </div>
+              </div>
+              <div className="text-center md:text-left">
+                <h3 className="text-lg mb-4">מידע משפטי</h3>
+                <div className="space-y-2">
+                  <p>
+                    <button
+                      onClick={() => setIsPrivacyDialogOpen(true)}
+                      className="text-gray-300 hover:text-orange-500 transition-colors"
+                    >
+                      מדיניות פרטיות
+                    </button>
+                  </p>
+                  <p>
+                    <button
+                      onClick={() => setIsTermsDialogOpen(true)}
+                      className="text-gray-300 hover:text-orange-500 transition-colors"
+                    >
+                      תנאי שימוש
+                    </button>
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="text-center md:text-left">
-              <h3 className="text-lg mb-4">מידע משפטי</h3>
-              <div className="space-y-2">
-                <p>
-                  <button 
-                    onClick={() => setIsPrivacyDialogOpen(true)}
-                    className="text-gray-300 hover:text-orange-500 transition-colors"
-                  >
-                    מדיניות פרטיות
-                  </button>
-                </p>
-                <p>
-                  <button 
-                    onClick={() => setIsTermsDialogOpen(true)}
-                    className="text-gray-300 hover:text-orange-500 transition-colors"
-                  >
-                    תנאי שימוש
-                  </button>
-                </p>
-              </div>
+            <div className="border-t border-gray-700 pt-8 text-center">
+              <p className="text-gray-400">© 2024 איריס שני - ייעוץ משאבי אנוש. כל הזכויות שמורות.</p>
             </div>
           </div>
-          <div className="border-t border-gray-700 pt-8 text-center">
-            <p className="text-gray-400">© 2024 איריס שני - ייעוץ משאבי אנוש. כל הזכויות שמורות.</p>
-          </div>
-        </div>
-      </footer>
+        </footer>
       </div>
     </div>
   );
