@@ -1,8 +1,11 @@
-import { MessageCircle, Phone, Mail, MapPin, User, FileText, PiggyBank, LogOut, BriefcaseBusiness, X, GitGraph, Cog } from 'lucide-react';
+import React, { useState } from 'react';
+import { MessageCircle, Phone, Mail, MapPin, User, FileText, PiggyBank, LogOut, BriefcaseBusiness, X, GitGraph, Cog, Send } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
-import { useState } from 'react';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
+import { Label } from '../components/ui/label';
 import logo from 'figma:asset/5238df62aa5d3c4e2b5040b827041631a24389b9.png';
 import heroImage from 'figma:asset/24970e13ba695a8b5fca661a1de5bf574ad76d59.png';
 import backgroundImage from '../assets/background.png';
@@ -14,6 +17,17 @@ export default function Home() {
   const [isPrivacyDialogOpen, setIsPrivacyDialogOpen] = useState(false);
   const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false);
   const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
+  
+  // Contact form state
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    service: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
 
   const businessImage = "https://images.unsplash.com/photo-1758518730384-be3d205838e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGhhbmRzaGFrZSUyMHByb2Zlc3Npb25hbHxlbnwxfHx8fDE3NTk0MDA3NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
   const documentsImage = "https://images.unsplash.com/photo-1746221331496-a87689fc8eb9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjBkb2N1bWVudHMlMjBjYWxjdWxhdG9yfGVufDF8fHx8MTc1OTQwMTU5Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
@@ -22,6 +36,93 @@ export default function Home() {
   const handleServiceClick = (service) => {
     setSelectedService(service);
     setIsDialogOpen(true);
+  };
+
+  // Contact form handlers
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      // Use a hidden iframe to submit the form and avoid CORS issues
+      const form = e.target;
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.name = 'web3forms-iframe';
+      document.body.appendChild(iframe);
+
+      // Set form target to the iframe
+      form.target = 'web3forms-iframe';
+      form.action = 'https://api.web3forms.com/submit';
+      form.method = 'POST';
+
+      // Add hidden fields for Web3Forms
+      const hiddenFields = {
+        'access_key': '0ddbf514-10e6-4118-9585-204a4d905960',
+        'subject': 'בקשה להצעת מחיר - iris-hr.work',
+        'from_name': 'iris-hr.work Contact Form',
+        'to': 'info@iris-hr.work',
+        'redirect': 'false'
+      };
+
+      // Add hidden inputs
+      Object.entries(hiddenFields).forEach(([name, value]) => {
+        let input = form.querySelector(`input[name="${name}"]`);
+        if (!input) {
+          input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = name;
+          form.appendChild(input);
+        }
+        input.value = value;
+      });
+
+      // Handle iframe load event
+      iframe.onload = () => {
+        // Assume success since Web3Forms doesn't return CORS-friendly responses
+        setSubmitStatus('success');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          service: '',
+          message: ''
+        });
+        
+        // Clean up
+        document.body.removeChild(iframe);
+        form.target = '';
+        form.action = '';
+        form.method = '';
+        
+        // Remove hidden inputs
+        Object.keys(hiddenFields).forEach(name => {
+          const input = form.querySelector(`input[name="${name}"]`);
+          if (input) {
+            form.removeChild(input);
+          }
+        });
+        
+        setIsSubmitting(false);
+      };
+
+      // Submit the form
+      form.submit();
+
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setSubmitStatus('error');
+      setIsSubmitting(false);
+    }
   };
 
   const employeeServices = [
@@ -319,7 +420,7 @@ export default function Home() {
           </div>
         </section>
         {/* Employee Services */}
-        <section id="employee-services" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
+        <section id="employee-services" style={{ paddingTop: '8rem', paddingBottom: '8rem', marginTop: '4rem' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontWeight: 500 }}>
@@ -349,12 +450,11 @@ export default function Home() {
         </section>
 
         {/* Employer Services */}
-        <section id="employer-services" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
+        <section id="employer-services" style={{ paddingTop: '8rem', paddingBottom: '8rem', marginTop: '4rem' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontWeight: 500 }}>
-                עסקים קטנים ובינוניים - שקט וביטחון בניהול עובדים
-              </h2>
+                עסקים קטנים ובינוניים</h2>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Empty column for spacing */}
@@ -386,7 +486,7 @@ export default function Home() {
         </section>
 
         {/* About Me Section */}
-        <section id="about" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
+        <section id="about" style={{ paddingTop: '8rem', paddingBottom: '8rem', marginTop: '4rem' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontWeight: 500 }}>
@@ -488,7 +588,7 @@ export default function Home() {
         </section>
 
         {/* Blog Section */}
-        <section id="blog" style={{ paddingTop: '10rem', paddingBottom: '10rem', marginTop: '4rem' }}>
+        <section id="blog" style={{ paddingTop: '8rem', paddingBottom: '8rem', marginTop: '4rem' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontWeight: 500 }}>
@@ -522,59 +622,190 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Contact Section */}
-        <section id="contact" style={{ paddingTop: '5rem', paddingBottom: '5rem', marginTop: '4rem' }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center bg-white/40 backdrop-blur-sm rounded-3xl shadow-lg p-8 relative">
-              {/* Artboard Pattern Overlay */}
-              <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat rounded-3xl"
-                style={{
-                  backgroundImage: `url(${artboardImage})`,
-                  opacity: 0.08,
-                  zIndex: 1
-                }}
-              ></div>
-              <div className="relative z-10">
-                <h2 className="text-3xl md:text-4xl text-gray-900 mb-8">
-                  בואו נדבר
-                </h2>
-                <p className="text-xl text-gray-700 mb-12">
-                  אני זמינה לשאלות, ליווי וייעוץ - אל תהססו לפנות
-                </p>
+         {/* Contact Section */}
+         <section id="contact" style={{ paddingTop: '5rem', paddingBottom: '5rem', marginTop: '4rem' }}>
+           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+             <div className="text-center mb-16">
+               <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontWeight: 500 }}>
+                 בואו נדבר - קבלו הצעת מחיר
+               </h2>
+             </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                  <div className="space-y-2">
-                    <Phone className="h-8 w-8 text-orange-500 mx-auto" />
-                    <p className="text-gray-600">טלפון</p>
-                    <p className="text-lg">0508836955</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Mail className="h-8 w-8 text-orange-500 mx-auto" />
-                    <p className="text-gray-600">מייל</p>
-                    <a href="mailto:info@iris-hr.work" className="text-lg hover:text-orange-500 transition-colors">info@iris-hr.work</a>
-                  </div>
-                  <div className="space-y-2">
-                    <MapPin className="h-8 w-8 text-orange-500 mx-auto" />
-                    <p className="text-gray-600">מיקום</p>
-                    <p className="text-lg">גבעת ברנר</p>
-                  </div>
-                </div>
+             {/* Contact Form - Full Width */}
+             <div className="w-full">
+               <div className="bg-white rounded-2xl shadow-lg p-8 border border-orange-100">
+                 <h3 className="text-2xl font-bold text-gray-900 mb-6 text-right">קבלו הצעת מחיר</h3>
+                 
+                   <form 
+                     action="https://api.web3forms.com/submit" 
+                     method="POST" 
+                     onSubmit={handleSubmit} 
+                     className="space-y-6" 
+                     dir="rtl"
+                   >
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div>
+                       <Label htmlFor="name" className="text-right block mb-2 text-gray-700">שם מלא *</Label>
+                       <Input
+                         id="name"
+                         name="name"
+                         type="text"
+                         required
+                         value={formData.name}
+                         onChange={handleInputChange}
+                         className="text-right h-12 text-base"
+                         placeholder="הכנס את שמך המלא"
+                       />
+                     </div>
+                     <div>
+                       <Label htmlFor="email" className="text-right block mb-2 text-gray-700">אימייל *</Label>
+                       <Input
+                         id="email"
+                         name="email"
+                         type="email"
+                         required
+                         value={formData.email}
+                         onChange={handleInputChange}
+                         className="text-right h-12 text-base"
+                         placeholder="example@email.com"
+                       />
+                     </div>
+                   </div>
 
-                <Button
-                  size="lg"
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4"
-                  asChild
-                >
-                  <a href="https://wa.me/972508836955" target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    דברו איתי ב-WhatsApp
-                  </a>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div>
+                       <Label htmlFor="phone" className="text-right block mb-2 text-gray-700">טלפון</Label>
+                       <Input
+                         id="phone"
+                         name="phone"
+                         type="tel"
+                         value={formData.phone}
+                         onChange={handleInputChange}
+                         className="text-right h-12 text-base"
+                         placeholder="050-1234567"
+                       />
+                     </div>
+                     <div>
+                       <Label htmlFor="service" className="text-right block mb-2 text-gray-700">שירות מבוקש</Label>
+                       <select
+                         id="service"
+                         name="service"
+                         value={formData.service}
+                         onChange={handleInputChange}
+                         className="w-full px-3 py-2 border border-gray-300 rounded-md text-right bg-white h-12 text-base"
+                       >
+                         <option value="">בחר שירות</option>
+                         <option value="ניתוח תלוש שכר">ניתוח תלוש שכר</option>
+                         <option value="ייעוץ על הסכמי עבודה">ייעוץ על הסכמי עבודה</option>
+                         <option value="ליווי מול רשויות">ליווי מול רשויות</option>
+                         <option value="פנסיה בתלוש השכר">פנסיה בתלוש השכר</option>
+                         <option value="סיומי עבודה">סיומי עבודה</option>
+                         <option value="ליווי במציאת עבודה">ליווי במציאת עבודה</option>
+                         <option value="גיוס בהתאמה אישית">גיוס בהתאמה אישית</option>
+                         <option value="שירות אחר">שירות אחר</option>
+                       </select>
+                     </div>
+                   </div>
+
+                   <div>
+                     <Label htmlFor="message" className="text-right block mb-2 text-gray-700">הודעה *</Label>
+                     <Textarea
+                       id="message"
+                       name="message"
+                       required
+                       value={formData.message}
+                       onChange={handleInputChange}
+                       style={{ minHeight: '100px' }}
+                       className="text-right min-h-[100px]"
+                       placeholder="ספרו לנו על הצרכים שלכם ומה אתם מחפשים..."
+                     />
+                   </div>
+
+                   {submitStatus === 'success' && (
+                     <div className="bg-green-50 border border-green-200 rounded-md p-4 text-right">
+                       <p className="text-green-800">תודה! ההודעה נשלחה בהצלחה. נחזור אליכם בהקדם.</p>
+                     </div>
+                   )}
+
+                   {submitStatus === 'error' && (
+                     <div className="bg-red-50 border border-red-200 rounded-md p-4 text-right">
+                       <p className="text-red-800">אירעה שגיאה. אנא נסו שוב או צרו קשר ישירות.</p>
+                     </div>
+                   )}
+
+
+                   <Button
+                     type="submit"
+                     disabled={isSubmitting}
+                     className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 text-lg"
+                   >
+                     {isSubmitting ? (
+                       <span className="flex items-center justify-center gap-2">
+                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                         שולח...
+                       </span>
+                     ) : (
+                       <span className="flex items-center justify-center gap-2">
+                         <Send className="h-5 w-5" />
+                         שלח בקשה להצעת מחיר
+                       </span>
+                     )}
+                   </Button>
+                 </form>
+               </div>
+             </div>
+
+             {/* Original CTA Section */}
+             <div className="mt-16 text-center bg-white/40 backdrop-blur-sm rounded-3xl shadow-lg p-8 relative" style={{ marginTop: '8rem' }}>
+               {/* Artboard Pattern Overlay */}
+               <div
+                 className="absolute inset-0 bg-cover bg-center bg-no-repeat rounded-3xl"
+                 style={{
+                   backgroundImage: `url(${artboardImage})`,
+                   opacity: 0.08,
+                   zIndex: 1
+                 }}
+               ></div>
+               <div className="relative z-10">
+                 <h2 className="text-3xl md:text-4xl text-gray-900 mb-8">
+                   בואו נדבר
+                 </h2>
+                 <p className="text-xl text-gray-700 mb-12">
+                   אני זמינה לשאלות, ליווי וייעוץ - אל תהססו לפנות
+                 </p>
+
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                   <div className="space-y-2">
+                     <Phone className="h-8 w-8 text-orange-500 mx-auto" />
+                     <p className="text-gray-600">טלפון</p>
+                     <p className="text-lg">0508836955</p>
+                   </div>
+                   <div className="space-y-2">
+                     <Mail className="h-8 w-8 text-orange-500 mx-auto" />
+                     <p className="text-gray-600">מייל</p>
+                     <a href="mailto:info@iris-hr.work" className="text-lg hover:text-orange-500 transition-colors">info@iris-hr.work</a>
+                   </div>
+                   <div className="space-y-2">
+                     <MapPin className="h-8 w-8 text-orange-500 mx-auto" />
+                     <p className="text-gray-600">מיקום</p>
+                     <p className="text-lg">גבעת ברנר</p>
+                   </div>
+                 </div>
+
+                 <Button
+                   size="lg"
+                   className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4"
+                   asChild
+                 >
+                   <a href="https://wa.me/972508836955" target="_blank" rel="noopener noreferrer">
+                     <MessageCircle className="mr-2 h-4 w-4" />
+                     דברו איתי ב-WhatsApp
+                   </a>
+                 </Button>
+               </div>
+             </div>
+           </div>
+         </section>
 
         {/* About Dialog */}
         <Dialog open={isAboutDialogOpen} onOpenChange={setIsAboutDialogOpen}>
@@ -866,7 +1097,8 @@ export default function Home() {
                         {selectedService.benefits.map((benefit, index) => (
                           <li key={index} className="flex items-start gap-3 text-right flex-row-reverse">
                             <span className="text-gray-700 leading-relaxed flex-1 text-right text-sm">{benefit}</span>
-                            <span className="text-orange-500 mt-1 flex-shrink-0">•</span>
+                            {/* <span className="text-orange-500 flex-shrink-0">•</span> */}
+                            <span style={{ width: '4px', height: '4px', backgroundColor: '#f97316', borderRadius: '50%', marginTop: '10px' }} className="text-orange-500 flex-shrink-0"></span>
                           </li>
                         ))}
                       </ul>
@@ -882,7 +1114,7 @@ export default function Home() {
                         {selectedService.additionalBenefits.map((benefit, index) => (
                           <li key={index} className="flex items-start gap-3 text-right flex-row-reverse">
                             <span className="text-gray-700 leading-relaxed flex-1 text-right text-sm">{benefit}</span>
-                            <span className="text-orange-500 mt-1 flex-shrink-0">•</span>
+                            <span style={{ width: '4px', height: '4px', backgroundColor: '#f97316', borderRadius: '50%', marginTop: '10px' }} className="text-orange-500 flex-shrink-0"></span>
                           </li>
                         ))}
                       </ul>
@@ -963,7 +1195,7 @@ export default function Home() {
               </div>
             </div>
             <div className="border-t border-gray-700 pt-8 text-center">
-              <p className="text-gray-400">© 2024 איריס שני - ייעוץ משאבי אנוש. כל הזכויות שמורות.</p>
+              <p className="text-gray-400">© {new Date().getFullYear()} איריס שני - ייעוץ משאבי אנוש. כל הזכויות שמורות.</p>
             </div>
           </div>
         </footer>
