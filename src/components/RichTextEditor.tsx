@@ -5,6 +5,7 @@ import { Color } from '@tiptap/extension-color';
 import { TextAlign } from '@tiptap/extension-text-align';
 import { Underline } from '@tiptap/extension-underline';
 import { Link } from '@tiptap/extension-link';
+import { Image } from '@tiptap/extension-image';
 import { 
   Bold, 
   Italic, 
@@ -18,11 +19,16 @@ import {
   Unlink,
   Undo,
   Redo,
-  Eye
+  Eye,
+  Image as ImageIcon,
+  Upload,
+  Loader2
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
-import { useState } from 'react';
+import { Alert, AlertDescription } from './ui/alert';
+import React, { useState, useRef } from 'react';
+import { imageUploadService } from '../services/imageUploadService';
 
 interface RichTextEditorProps {
   content: string;
@@ -32,6 +38,10 @@ interface RichTextEditorProps {
 
 export default function RichTextEditor({ content, onChange, placeholder }: RichTextEditorProps) {
   const [linkUrl, setLinkUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
     extensions: [
@@ -48,6 +58,11 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           class: 'text-orange-500 underline',
         },
       }),
+      Image.configure({
+        HTMLAttributes: {
+          class: 'max-w-full h-auto rounded-lg shadow-sm',
+        },
+      }),
     ],
     content,
     onUpdate: ({ editor }) => {
@@ -56,6 +71,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     editorProps: {
       attributes: {
         class: 'prose prose-lg max-w-none min-h-[600px] p-6 focus:outline-none text-gray-800 leading-relaxed',
+        minHeight: '600px',
         dir: 'rtl',
       },
     },
@@ -72,12 +88,64 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     editor?.chain().focus().unsetLink().run();
   };
 
+  const addImage = () => {
+    if (imageUrl) {
+      editor?.chain().focus().setImage({ src: imageUrl }).run();
+      setImageUrl('');
+    }
+  };
+
+  const handleFileUpload = async (file: File) => {
+    setUploadError('');
+    setUploading(true);
+
+    // Validate file
+    const validation = imageUploadService.validateImageFile(file);
+    if (!validation.valid) {
+      setUploadError(validation.error || 'Invalid file');
+      setUploading(false);
+      return;
+    }
+
+    try {
+      // Upload file
+      const result = await imageUploadService.uploadImage(file, 'content-images');
+      
+      if (result.error) {
+        setUploadError(result.error);
+      } else {
+        editor?.chain().focus().setImage({ src: result.url }).run();
+      }
+    } catch (error) {
+      setUploadError('Failed to upload image');
+      console.error('Upload error:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileUpload(file);
+    }
+  };
+
   if (!editor) {
     return null;
   }
 
   return (
     <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+      {/* Error Display */}
+      {uploadError && (
+        <div className="bg-red-50 border-b border-red-200 p-2">
+          <Alert variant="destructive" className="py-1">
+            <AlertDescription className="text-sm">{uploadError}</AlertDescription>
+          </Alert>
+        </div>
+      )}
+      
       {/* Toolbar */}
       <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 p-4 flex flex-wrap items-center gap-3">
         {/* Text Formatting */}
@@ -220,6 +288,46 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           </Button>
         </div>
 
+        {/* Images */}
+        <div className="flex items-center gap-2 border-r border-gray-300 pr-4">
+          <input
+            type="url"
+            placeholder="הוסף תמונה (URL)"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            className="px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500"
+            dir="ltr"
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={addImage}
+            disabled={!imageUrl}
+          >
+            <ImageIcon className="h-4 w-4" />
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
+          >
+            {uploading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Upload className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
+
         {/* Undo/Redo */}
         <div className="flex items-center gap-2 border-r border-gray-300 pr-4">
           <Button
@@ -269,9 +377,9 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
 
       {/* Editor Content */}
       <div className="bg-white relative">
-        <EditorContent editor={editor} />
+        <EditorContent editor={editor} style={{ minHeight: '600px' }}/>
         {placeholder && !editor.getText() && (
-          <div className="absolute top-6 right-6 text-gray-400 pointer-events-none text-lg">
+          <div className="absolute top-6 right-6 text-gray-400 pointer-events-none text-lg" >
             {placeholder}
           </div>
         )}
