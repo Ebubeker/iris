@@ -23,9 +23,9 @@ CREATE INDEX IF NOT EXISTS idx_blog_posts_author_id ON blog_posts(author_id);
 ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
 
 -- Create policies for blog_posts
--- Allow authenticated users to read all blog posts
-CREATE POLICY "Allow authenticated users to read blog posts" ON blog_posts
-  FOR SELECT USING (auth.role() = 'authenticated');
+-- Allow everyone (including anonymous users) to read all blog posts
+CREATE POLICY "Allow public read access to blog posts" ON blog_posts
+  FOR SELECT USING (true);
 
 -- Allow authenticated users to insert their own blog posts
 CREATE POLICY "Allow authenticated users to insert blog posts" ON blog_posts

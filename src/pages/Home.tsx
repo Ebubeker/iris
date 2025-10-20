@@ -1,22 +1,35 @@
-import React, { useState } from 'react';
-import { MessageCircle, Phone, Mail, MapPin, User, FileText, PiggyBank, LogOut, BriefcaseBusiness, X, GitGraph, Cog, Send } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { MessageCircle, Phone, Mail, MapPin, User, FileText, PiggyBank, LogOut, BriefcaseBusiness, X, GitGraph, Cog, Send, Calendar } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
-import logo from 'figma:asset/5238df62aa5d3c4e2b5040b827041631a24389b9.png';
+import { Badge } from '../components/ui/badge';
+import { blogService } from '../services/blogService';
+import { BlogPost } from '../lib/supabase';
+import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
+// @ts-ignore
 import heroImage from 'figma:asset/24970e13ba695a8b5fca661a1de5bf574ad76d59.png';
+// @ts-ignore
 import backgroundImage from '../assets/background.png';
+// @ts-ignore
 import artboardImage from '../../Artboard 1.png';
 
 export default function Home() {
+  const location = useLocation();
   const [selectedService, setSelectedService] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isPrivacyDialogOpen, setIsPrivacyDialogOpen] = useState(false);
   const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false);
   const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
+  
+  // Blog posts state
+  const [featuredBlogPosts, setFeaturedBlogPosts] = useState<BlogPost[]>([]);
+  const [blogLoading, setBlogLoading] = useState(true);
   
   // Contact form state
   const [formData, setFormData] = useState({
@@ -32,6 +45,52 @@ export default function Home() {
   const businessImage = "https://images.unsplash.com/photo-1758518730384-be3d205838e8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGhhbmRzaGFrZSUyMHByb2Zlc3Npb25hbHxlbnwxfHx8fDE3NTk0MDA3NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
   const documentsImage = "https://images.unsplash.com/photo-1746221331496-a87689fc8eb9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjBkb2N1bWVudHMlMjBjYWxjdWxhdG9yfGVufDF8fHx8MTc1OTQwMTU5Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
   const lawImage = "https://images.unsplash.com/photo-1583521214690-73421a1829a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b3JrcGxhY2UlMjBsYXclMjBkb2N1bWVudHN8ZW58MXx8fHwxNzU5NDAxNjAwfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
+
+  // Load featured blog posts on component mount
+  useEffect(() => {
+    loadFeaturedBlogs();
+  }, []);
+
+  // Handle scroll to section when hash changes
+  useEffect(() => {
+    if (location.hash) {
+      const elementId = location.hash.substring(1); // Remove the '#' 
+      const element = document.getElementById(elementId);
+      if (element) {
+        // Add a small delay to ensure the page has rendered
+        setTimeout(() => {
+          const navbarHeight = 80;
+          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+          
+          window.scrollTo({
+            top: elementPosition,
+            behavior: 'smooth'
+          });
+        }, 100);
+      }
+    }
+  }, [location.hash]);
+
+  const loadFeaturedBlogs = async () => {
+    try {
+      const featuredPosts = await blogService.getFeaturedBlogPosts();
+      setFeaturedBlogPosts(featuredPosts.slice(0, 3)); // Limit to 3 featured posts
+    } catch (error) {
+      console.error('Error loading featured blog posts:', error);
+      // Fall back to empty array - will show fallback content
+      setFeaturedBlogPosts([]);
+    } finally {
+      setBlogLoading(false);
+    }
+  };
+
+  const formatBlogDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('he-IL', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
 
   const handleServiceClick = (service) => {
     setSelectedService(service);
@@ -310,7 +369,8 @@ export default function Home() {
     }
   ];
 
-  const blogPosts = [
+  // Fallback static posts in case no featured posts are available
+  const fallbackBlogPosts = [
     {
       title: "זכויות עובדים בישראל: מדריך מקיף לשנת 2024",
       excerpt: "כל מה שצריך לדעת על זכויות עובדים, חופשות, ימי מחלה ותנאי עבודה...",
@@ -339,44 +399,10 @@ export default function Home() {
         style={{ backgroundImage: `url(${backgroundImage})` }}
       ></div>
       <div className="relative z-10">
-        {/* Header */}
-        <header className="bg-white backdrop-blur-sm shadow-sm sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              {/* Logo */}
-              <div className="flex-shrink-0">
-                <img src={logo} alt="Iris Shani Logo" className="h-12 w-auto" />
-              </div>
-
-              {/* Navigation */}
-              <nav className="hidden md:flex items-center space-x-reverse">
-                <a href="#home" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">בית</a>
-                <button
-                  onClick={() => setIsAboutDialogOpen(true)}
-                  className="text-gray-700 hover:text-orange-500 transition-colors ml-8"
-                >
-                  עלי
-                </button>
-                <a href="#employee-services" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">שירותים לעובדים</a>
-                <a href="#employer-services" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">שירותים למעסיקים</a>
-                <a href="#about" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">אודותיי</a>
-                <a href="#blog" className="text-gray-700 hover:text-orange-500 transition-colors ml-8">בלוג</a>
-                <a href="#contact" className="text-gray-700 hover:text-orange-500 transition-colors ml-12">צור קשר</a>
-              </nav>
-
-              {/* WhatsApp CTA */}
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white" asChild>
-                <a href="https://wa.me/972508836955" target="_blank" rel="noopener noreferrer">
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  צור קשר עכשיו
-                </a>
-              </Button>
-            </div>
-          </div>
-        </header>
+        <Navbar activeSection="home" />
 
         {/* Hero Section */}
-        <section id="home" className="relative bg-gradient-to-br from-orange-50 to-orange-100 py-20">
+        <section id="home" className="relative bg-gradient-to-br from-orange-50 to-orange-100 py-20" style={{ paddingTop: '8rem' }}>
           {/* Artboard Background */}
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
@@ -399,7 +425,7 @@ export default function Home() {
                   <br /><br />
                   אני כאן כדי לעזור לכם לבדוק, להבין ולפעול - ייעוץ שכר אישי, בדיקת זכויות, ניכויים והפרשות, וליווי מקצועי שיבטיח שתקבלו את כל מה שמגיע לכם - לאורך כל הדרך.
                 </p>
-                <div className="animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+                <div className="animate-fade-in-up flex justify-center" style={{ animationDelay: '0.6s' }}>
                   <Button
                     size="lg"
                     className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4"
@@ -553,7 +579,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-orange-500 text-4xl font-bold" style={{ fontWeight: 600 }}>500+</span>
+                  <span className="text-orange-500 text-4xl font-bold" style={{ fontWeight: 600 }}>1500+</span>
                 </div>
                 <h4 className="text-xl font-semibold text-gray-900 mb-2">עובדים</h4>
                 <p className="text-gray-600">שקיבלו ליווי מקצועי</p>
@@ -596,27 +622,77 @@ export default function Home() {
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-              {blogPosts.map((post, index) => (
-                <Card key={index} className="overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white border-0 shadow-lg group">
-                  <div className="aspect-video overflow-hidden relative">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                  <CardContent className="p-6 space-y-3">
-                    <p className="text-sm text-orange-500 font-medium">{post.date}</p>
-                    <h3 className="text-lg text-gray-900 leading-tight font-semibold group-hover:text-orange-600 transition-colors duration-300">{post.title}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">{post.excerpt}</p>
-                  </CardContent>
-                </Card>
-              ))}
+              {blogLoading ? (
+                // Loading skeleton
+                Array.from({ length: 3 }).map((_, index) => (
+                  <Card key={index} className="overflow-hidden bg-white border-0 shadow-lg">
+                    <div className="aspect-video bg-gray-200 animate-pulse"></div>
+                    <CardContent className="p-6 space-y-3">
+                      <div className="h-4 bg-gray-200 animate-pulse rounded w-20"></div>
+                      <div className="h-6 bg-gray-200 animate-pulse rounded"></div>
+                      <div className="space-y-2">
+                        <div className="h-4 bg-gray-200 animate-pulse rounded"></div>
+                        <div className="h-4 bg-gray-200 animate-pulse rounded w-3/4"></div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                // Real blog posts or fallback
+                (featuredBlogPosts.length > 0 ? featuredBlogPosts : fallbackBlogPosts).map((post, index) => (
+                  <Card key={post.id || index} className="overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 bg-white border-0 shadow-lg group">
+                    <div className="aspect-video overflow-hidden relative">
+                      <img
+                        src={post.thumbnail_url || post.image || documentsImage}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.currentTarget.src = documentsImage;
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      
+                      {/* Featured Badge for real blog posts */}
+                      {post.featured && (
+                        <div className="absolute top-3 right-3">
+                          <Badge className="bg-orange-500 text-white">
+                            מומלץ
+                          </Badge>
+                        </div>
+                      )}
+                    </div>
+                    <CardContent className="p-6 space-y-3">
+                      <div className="flex items-center gap-2 text-sm text-orange-500 font-medium">
+                        <Calendar className="h-4 w-4" />
+                        <span>{post.created_at ? formatBlogDate(post.created_at) : post.date}</span>
+                      </div>
+                      <h3 className="text-lg text-gray-900 leading-tight font-semibold group-hover:text-orange-600 transition-colors duration-300">
+                        {post.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {post.summary || post.excerpt}
+                      </p>
+                      
+                      {/* Tags for real blog posts */}
+                      {post.tags && post.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2 pt-2">
+                          {post.tags.slice(0, 2).map((tag, tagIndex) => (
+                            <Badge key={tagIndex} variant="outline" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))
+              )}
             </div>
             <div className="text-center">
-              <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4">
-                לקריאת כל הפוסטים
+              <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4" asChild>
+                <Link to="/blogs">
+                  לקריאת כל הפוסטים
+                </Link>
               </Button>
             </div>
           </div>
@@ -673,18 +749,19 @@ export default function Home() {
                    </div>
 
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                     <div>
-                       <Label htmlFor="phone" className="text-right block mb-2 text-gray-700">טלפון</Label>
-                       <Input
-                         id="phone"
-                         name="phone"
-                         type="tel"
-                         value={formData.phone}
-                         onChange={handleInputChange}
-                         className="text-right h-12 text-base"
-                         placeholder="050-1234567"
-                       />
-                     </div>
+                    <div>
+                      <Label htmlFor="phone" className="text-right block mb-2 text-gray-700">טלפון *</Label>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        required
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="text-right h-12 text-base"
+                        placeholder="050-1234567"
+                      />
+                    </div>
                      <div>
                        <Label htmlFor="service" className="text-right block mb-2 text-gray-700">שירות מבוקש</Label>
                        <select
@@ -1169,7 +1246,7 @@ export default function Home() {
                   <p><a href="#employee-services" className="text-gray-300 hover:text-orange-500 transition-colors">שירותים לעובדים</a></p>
                   <p><a href="#employer-services" className="text-gray-300 hover:text-orange-500 transition-colors">שירותים למעסיקים</a></p>
                   <p><a href="#about" className="text-gray-300 hover:text-orange-500 transition-colors">אודותיי</a></p>
-                  <p><a href="#blog" className="text-gray-300 hover:text-orange-500 transition-colors">בלוג</a></p>
+                  <p><Link to="/blogs" className="text-gray-300 hover:text-orange-500 transition-colors">בלוג</Link></p>
                 </div>
               </div>
               <div className="text-center md:text-left">
