@@ -129,7 +129,7 @@ export default function Home() {
         'access_key': '0ddbf514-10e6-4118-9585-204a4d905960',
         'subject': 'בקשה להצעת מחיר - iris-hr.work',
         'from_name': 'iris-hr.work Contact Form',
-        'to': 'info@iris-hr.work',
+        'to': 'iris@iris-hr.work',
         'redirect': 'false'
       };
 
@@ -860,7 +860,7 @@ export default function Home() {
                    <div className="space-y-2">
                      <Mail className="h-8 w-8 text-orange-500 mx-auto" />
                      <p className="text-gray-600">מייל</p>
-                     <a href="mailto:info@iris-hr.work" className="text-lg hover:text-orange-500 transition-colors">info@iris-hr.work</a>
+                     <a href="mailto:iris@iris-hr.work" className="text-lg hover:text-orange-500 transition-colors">iris@iris-hr.work</a>
                    </div>
                    <div className="space-y-2">
                      <MapPin className="h-8 w-8 text-orange-500 mx-auto" />
@@ -1006,7 +1006,7 @@ export default function Home() {
                 <h4 className="text-lg text-gray-900 mb-3 text-right">6. יצירת קשר</h4>
                 <p className="text-gray-700 leading-relaxed text-right">
                   לשאלות, פניות או ייעוץ אישי ניתן ליצור קשר עם איריס שני בכתובת הדוא"ל:
-                  info@iris-hr.work
+                  iris@iris-hr.work
                   או בטלפון: 050-8836955
                 </p>
               </div>
@@ -1116,7 +1116,7 @@ export default function Home() {
                 <h4 className="text-lg text-gray-900 mb-3 text-right">8. יצירת קשר</h4>
                 <p className="text-gray-700 leading-relaxed text-right">
                   לשאלות או הבהרות לגבי מדיניות פרטיות זו, ניתן ליצור קשר בכתובת:
-                  info@iris-hr.work או בטלפון: 050-8836955.
+                  iris@iris-hr.work או בטלפון: 050-8836955.
                 </p>
               </div>
 
@@ -1229,7 +1229,7 @@ export default function Home() {
               <div className="text-center md:text-right">
                 <h3 className="text-lg mb-4">צור קשר</h3>
                 <p className="text-gray-300">טלפון: 0508836955</p>
-                <p className="text-gray-300">מייל: info@iris-hr.work</p>
+                <p className="text-gray-300">מייל: iris@iris-hr.work</p>
                 <p className="text-gray-300">מיקום: גבעת ברנר</p>
               </div>
               <div className="text-center">
