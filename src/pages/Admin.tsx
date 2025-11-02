@@ -754,13 +754,13 @@ export default function Admin() {
                                 : 'כל הפוסטים שלך מוגדרים כמומלצים.'}
                           </p>
                           {blogPosts.length === 0 ? (
-                            <Button 
+                      <Button 
                               onClick={startNewPost}
                               className="bg-orange-500 hover:bg-orange-600 text-white mt-4"
-                            >
-                              <Plus className="h-4 w-4 ml-2" />
-                              צור פוסט חדש
-                            </Button>
+                      >
+                        <Plus className="h-4 w-4 ml-2" />
+                        צור פוסט חדש
+                      </Button>
                           ) : (searchQuery || selectedTag) ? (
                             <Button
                               variant="outline"
@@ -890,9 +890,9 @@ export default function Admin() {
                       </p>
                     )}
                     {!errors.content && (
-                      <p className="text-sm text-gray-500">
-                        השתמש בסרגל הכלים לעיצוב הטקסט, הוספת כותרות, רשימות וקישורים
-                      </p>
+                    <p className="text-sm text-gray-500">
+                      השתמש בסרגל הכלים לעיצוב הטקסט, הוספת כותרות, רשימות וקישורים
+                    </p>
                     )}
                   </div>
 

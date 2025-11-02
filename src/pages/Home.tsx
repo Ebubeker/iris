@@ -423,21 +423,6 @@ export default function Home() {
         url="/"
         image="/src/assets/background.png"
       />
-      {/* Skip Links for Keyboard Navigation */}
-      <div className="sr-only focus-within:not-sr-only focus-within:absolute focus-within:z-[100] focus-within:top-4 focus-within:right-4">
-        <a
-          href="#home"
-          className="block bg-orange-500 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2"
-        >
-          דלג לתוכן הראשי
-        </a>
-        <a
-          href="#contact"
-          className="block bg-orange-500 text-white px-4 py-2 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:ring-offset-2"
-        >
-          דלג לטופס יצירת קשר
-        </a>
-      </div>
       {/* Background Image */}
       <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-60 z-0"
