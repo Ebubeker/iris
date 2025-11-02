@@ -6,6 +6,8 @@ import { Calendar, ArrowRight, Loader2 } from 'lucide-react';
 import { blogService } from '../services/blogService';
 import { BlogPost } from '../lib/supabase';
 import Navbar from '../components/Navbar';
+import SEO from '../components/SEO';
+import CookieBanner from '../components/CookieBanner';
 // @ts-ignore
 import backgroundImage from '../assets/background.png';
 // @ts-ignore
@@ -104,6 +106,19 @@ export default function BlogDetail() {
 
   return (
     <div className="min-h-screen relative" dir="rtl">
+      <SEO 
+        title={blogPost?.title || "מאמר - איריס שני יועצת משאבי אנוש"}
+        description={blogPost?.summary || blogPost?.subtitle || "מאמר מקצועי על זכויות עובדים וייעוץ שכר מאת איריס שני יועצת משאבי אנוש"}
+        keywords={`${blogPost?.tags?.join(', ') || ''}, משאבי אנוש, זכויות עובדים, ייעוץ שכר, איריס שני`}
+        url={`/blogs/${id}`}
+        image={blogPost?.thumbnail_url || "/src/assets/background.png"}
+        type="article"
+        author="איריס שני"
+        publishedTime={blogPost?.created_at}
+        modifiedTime={blogPost?.updated_at}
+        section="משאבי אנוש"
+        tags={blogPost?.tags || []}
+      />
       {/* Background Image */}
       <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-60 z-0"
@@ -185,7 +200,7 @@ export default function BlogDetail() {
                 <div className="order-first lg:order-last animate-fade-in-right" style={{ animationDelay: '0.2s' }}>
                   <img
                     src={blogPost.thumbnail_url}
-                    alt={blogPost.title}
+                    alt={blogPost.title ? `תמונה ראשית עבור הפוסט: ${blogPost.title}` : 'תמונה ראשית של פוסט בבלוג'}
                     className="rounded-2xl shadow-2xl w-full h-[400px] object-cover"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
@@ -204,6 +219,7 @@ export default function BlogDetail() {
             <div 
               className="prose prose-lg max-w-none text-gray-800 leading-relaxed"
               style={{ lineHeight: '1.8' }}
+              dir="rtl"
               dangerouslySetInnerHTML={{ __html: blogPost.content }}
             />
 
@@ -248,7 +264,7 @@ export default function BlogDetail() {
               <div className="text-center md:text-right">
                 <h3 className="text-lg" style={{ marginBottom: '1rem' }}>צור קשר</h3>
                 <p className="text-gray-300">טלפון: 0508836955</p>
-                <p className="text-gray-300">מייל: iris@iris-hr.work</p>
+                <p className="text-gray-300">מייל: info@iris-hr.work</p>
                 <p className="text-gray-300">מיקום: גבעת ברנר</p>
               </div>
               <div className="text-center">
@@ -274,6 +290,7 @@ export default function BlogDetail() {
           </div>
         </footer>
       </div>
+      <CookieBanner />
     </div>
   );
 }

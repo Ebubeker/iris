@@ -79,12 +79,18 @@ export const blogService = {
   },
 
   // Get featured blog posts
-  async getFeaturedBlogPosts(): Promise<BlogPost[]> {
-    const { data, error } = await supabase
+  async getFeaturedBlogPosts(limit?: number): Promise<BlogPost[]> {
+    let query = supabase
       .from('blog_posts')
       .select('*')
       .eq('featured', true)
       .order('created_at', { ascending: false })
+
+    if (limit) {
+      query = query.limit(limit)
+    }
+
+    const { data, error } = await query
 
     if (error) {
       console.error('Error fetching featured blog posts:', error)

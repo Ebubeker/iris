@@ -6,6 +6,9 @@ import { TextAlign } from '@tiptap/extension-text-align';
 import { Underline } from '@tiptap/extension-underline';
 import { Link } from '@tiptap/extension-link';
 import { Image } from '@tiptap/extension-image';
+import { BulletList } from '@tiptap/extension-bullet-list';
+import { OrderedList } from '@tiptap/extension-ordered-list';
+import { ListItem } from '@tiptap/extension-list-item';
 import { 
   Bold, 
   Italic, 
@@ -22,7 +25,8 @@ import {
   Eye,
   Image as ImageIcon,
   Upload,
-  Loader2
+  Loader2,
+  X
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
@@ -41,11 +45,19 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
   const [imageUrl, setImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // @ts-ignore
+  const backgroundImage = '../assets/background.png';
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        bulletList: false,
+        orderedList: false,
+        listItem: false,
+      }),
       TextStyle,
       Color,
       TextAlign.configure({
@@ -61,6 +73,23 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       Image.configure({
         HTMLAttributes: {
           class: 'max-w-full h-auto rounded-lg shadow-sm',
+        },
+      }),
+      BulletList.configure({
+        HTMLAttributes: {
+          class: 'list-disc list-inside',
+          dir: 'rtl',
+        },
+      }),
+      OrderedList.configure({
+        HTMLAttributes: {
+          class: 'list-decimal list-inside',
+          dir: 'rtl',
+        },
+      }),
+      ListItem.configure({
+        HTMLAttributes: {
+          dir: 'rtl',
         },
       }),
     ],
@@ -79,18 +108,18 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
 
   const addLink = () => {
     if (linkUrl) {
-      editor?.chain().focus().setLink({ href: linkUrl }).run();
+      editor?.chain().focus(undefined, { scrollIntoView: false }).setLink({ href: linkUrl }).run();
       setLinkUrl('');
     }
   };
 
   const removeLink = () => {
-    editor?.chain().focus().unsetLink().run();
+    editor?.chain().focus(undefined, { scrollIntoView: false }).unsetLink().run();
   };
 
   const addImage = () => {
     if (imageUrl) {
-      editor?.chain().focus().setImage({ src: imageUrl }).run();
+      editor?.chain().focus(undefined, { scrollIntoView: false }).setImage({ src: imageUrl }).run();
       setImageUrl('');
     }
   };
@@ -114,7 +143,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       if (result.error) {
         setUploadError(result.error);
       } else {
-        editor?.chain().focus().setImage({ src: result.url }).run();
+        editor?.chain().focus(undefined, { scrollIntoView: false }).setImage({ src: result.url }).run();
       }
     } catch (error) {
       setUploadError('Failed to upload image');
@@ -153,24 +182,36 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().toggleBold().run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).toggleBold().run();
+            }}
             className={editor.isActive('bold') ? 'bg-orange-100 text-orange-700' : ''}
+            type="button"
           >
             <Bold className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().toggleItalic().run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).toggleItalic().run();
+            }}
             className={editor.isActive('italic') ? 'bg-orange-100 text-orange-700' : ''}
+            type="button"
           >
             <Italic className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).toggleUnderline().run();
+            }}
             className={editor.isActive('underline') ? 'bg-orange-100 text-orange-700' : ''}
+            type="button"
           >
             <UnderlineIcon className="h-4 w-4" />
           </Button>
@@ -181,32 +222,48 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().setParagraph().run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).setParagraph().run();
+            }}
             className={editor.isActive('paragraph') ? 'bg-orange-100 text-orange-700' : ''}
+            type="button"
           >
             P
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).toggleHeading({ level: 1 }).run();
+            }}
             className={editor.isActive('heading', { level: 1 }) ? 'bg-orange-100 text-orange-700' : ''}
+            type="button"
           >
             H1
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).toggleHeading({ level: 2 }).run();
+            }}
             className={editor.isActive('heading', { level: 2 }) ? 'bg-orange-100 text-orange-700' : ''}
+            type="button"
           >
             H2
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).toggleHeading({ level: 3 }).run();
+            }}
             className={editor.isActive('heading', { level: 3 }) ? 'bg-orange-100 text-orange-700' : ''}
+            type="button"
           >
             H3
           </Button>
@@ -217,16 +274,24 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).toggleBulletList().run();
+            }}
             className={editor.isActive('bulletList') ? 'bg-orange-100 text-orange-700' : ''}
+            type="button"
           >
             <List className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).toggleOrderedList().run();
+            }}
             className={editor.isActive('orderedList') ? 'bg-orange-100 text-orange-700' : ''}
+            type="button"
           >
             <ListOrdered className="h-4 w-4" />
           </Button>
@@ -237,24 +302,36 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().setTextAlign('right').run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).setTextAlign('right').run();
+            }}
             className={editor.isActive({ textAlign: 'right' }) ? 'bg-orange-100 text-orange-700' : ''}
+            type="button"
           >
             <AlignRight className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().setTextAlign('center').run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).setTextAlign('center').run();
+            }}
             className={editor.isActive({ textAlign: 'center' }) ? 'bg-orange-100 text-orange-700' : ''}
+            type="button"
           >
             <AlignCenter className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().setTextAlign('left').run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).setTextAlign('left').run();
+            }}
             className={editor.isActive({ textAlign: 'left' }) ? 'bg-orange-100 text-orange-700' : ''}
+            type="button"
           >
             <AlignLeft className="h-4 w-4" />
           </Button>
@@ -273,16 +350,24 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           <Button
             variant="outline"
             size="sm"
-            onClick={addLink}
+            onClick={(e) => {
+              e.preventDefault();
+              addLink();
+            }}
             disabled={!linkUrl}
+            type="button"
           >
             <LinkIcon className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={removeLink}
+            onClick={(e) => {
+              e.preventDefault();
+              removeLink();
+            }}
             disabled={!editor.isActive('link')}
+            type="button"
           >
             <Unlink className="h-4 w-4" />
           </Button>
@@ -301,8 +386,12 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           <Button
             variant="outline"
             size="sm"
-            onClick={addImage}
+            onClick={(e) => {
+              e.preventDefault();
+              addImage();
+            }}
             disabled={!imageUrl}
+            type="button"
           >
             <ImageIcon className="h-4 w-4" />
           </Button>
@@ -316,9 +405,13 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           <Button
             variant="outline"
             size="sm"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={(e) => {
+              e.preventDefault();
+              fileInputRef.current?.click();
+            }}
             disabled={uploading}
             className="bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
+            type="button"
           >
             {uploading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -333,16 +426,24 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().undo().run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).undo().run();
+            }}
             disabled={!editor.can().undo()}
+            type="button"
           >
             <Undo className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => editor.chain().focus().redo().run()}
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus(undefined, { scrollIntoView: false }).redo().run();
+            }}
             disabled={!editor.can().redo()}
+            type="button"
           >
             <Redo className="h-4 w-4" />
           </Button>
@@ -350,26 +451,76 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
 
         {/* Preview Button */}
         <div className="flex items-center gap-2">
-          <Dialog>
+          <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
             <DialogTrigger asChild>
               <Button
                 variant="outline"
                 size="sm"
                 className="bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
+                type="button"
+                onClick={() => setIsPreviewOpen(true)}
               >
                 <Eye className="h-4 w-4 mr-2" />
                 תצוגה מקדימה
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle className="text-right">תצוגה מקדימה של הפוסט</DialogTitle>
-              </DialogHeader>
-              <div 
-                className="prose prose-lg max-w-none p-6 bg-white rounded-lg border"
-                dir="rtl"
-                dangerouslySetInnerHTML={{ __html: content || '<p class="text-gray-500">אין תוכן לתצוגה</p>' }}
-              />
+            <DialogContent 
+              className="!max-w-none !w-screen !h-screen !max-h-screen overflow-y-auto p-0 m-0 rounded-none"
+              style={{ width: '100vw', height: '100vh', maxWidth: '100vw', maxHeight: '100vh' }}
+            >
+              <div className="sticky top-0 bg-white border-b z-50 px-6 py-4 shadow-sm flex items-center justify-between">
+                <div></div>
+                <DialogHeader className="p-0">
+                  <DialogTitle className="text-center text-lg font-bold text-orange-600">תצוגה מקדימה</DialogTitle>
+                </DialogHeader>
+                <button 
+                  onClick={() => setIsPreviewOpen(false)}
+                  className="text-gray-500 hover:text-gray-700 transition-colors p-2 rounded-full hover:bg-gray-100"
+                  aria-label="Close"
+                  type="button"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              
+              {/* Mimicking BlogDetail page layout with background */}
+              <div className="min-h-screen relative" dir="rtl">
+                {/* Background Image */}
+                <div
+                  className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-60 z-0"
+                  style={{ backgroundImage: `url(${backgroundImage})` }}
+                ></div>
+                
+                <div className="relative z-10">
+                  {/* Hero Section - like BlogDetail */}
+                  <section className="relative bg-gradient-to-br from-orange-50 to-orange-100 py-20">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                      <div className="grid grid-cols-1 gap-12 items-start">
+                        <div className="space-y-6">
+                          <h1 className="text-4xl md:text-5xl text-gray-900 leading-tight" style={{ fontWeight: 500 }}>
+                            תצוגה מקדימה של הפוסט
+                          </h1>
+                          <p className="text-xl text-gray-700">
+                            כך הפוסט שלך ייראה בעמוד הבלוג הציבורי
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Blog Content - like BlogDetail */}
+                  <main className="max-w-4xl mx-auto" style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '4rem', paddingBottom: '4rem' }}>
+                    <article className="bg-white rounded-2xl shadow-lg" style={{ padding: '3rem' }}>
+                      <div 
+                        className="prose prose-lg max-w-none text-gray-800 leading-relaxed"
+                        style={{ lineHeight: '1.8' }}
+                        dir="rtl"
+                        dangerouslySetInnerHTML={{ __html: content || '<p class="text-gray-500 text-center" style="text-align: center;">אין תוכן לתצוגה - התחל לכתוב כדי לראות את התצוגה המקדימה</p>' }}
+                      />
+                    </article>
+                  </main>
+                </div>
+              </div>
             </DialogContent>
           </Dialog>
         </div>

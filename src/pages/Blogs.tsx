@@ -8,6 +8,8 @@ import { blogService } from '../services/blogService';
 import { BlogPost } from '../lib/supabase';
 import { Link, useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import SEO from '../components/SEO';
+import CookieBanner from '../components/CookieBanner';
 // @ts-ignore
 import backgroundImage from '../assets/background.png';
 // @ts-ignore
@@ -120,6 +122,13 @@ export default function Blogs() {
 
   return (
     <div className="min-h-screen relative" dir="rtl">
+      <SEO 
+        title="בלוג - איריס שני יועצת משאבי אנוש"
+        description="מאמרים מקצועיים על זכויות עובדים, ייעוץ שכר, ניכויים והפרשות, פיצויי פיטורים ועוד. מידע עדכני ומקצועי מעולם משאבי האנוש."
+        keywords="בלוג משאבי אנוש, זכויות עובדים, ייעוץ שכר, פיצויי פיטורים, ניכויים והפרשות, חוקי עבודה, תלוש משכורת, איריס שני"
+        url="/blogs"
+        image="/src/assets/background.png"
+      />
       {/* Background Image */}
       <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-60 z-0"
@@ -222,7 +231,7 @@ export default function Blogs() {
                       <div className="aspect-video overflow-hidden relative">
                         <img
                           src={post.thumbnail_url}
-                          alt={post.title}
+                          alt={post.title ? `תמונת ממוזערת עבור הפוסט: ${post.title}` : 'תמונת ממוזערת של פוסט בבלוג'}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
@@ -386,7 +395,7 @@ export default function Blogs() {
               <div className="text-center md:text-right">
                 <h3 className="text-lg" style={{ marginBottom: '1rem' }}>צור קשר</h3>
                 <p className="text-gray-300">טלפון: 0508836955</p>
-                <p className="text-gray-300">מייל: iris@iris-hr.work</p>
+                <p className="text-gray-300">מייל: info@iris-hr.work</p>
                 <p className="text-gray-300">מיקום: גבעת ברנר</p>
               </div>
               <div className="text-center">
@@ -412,6 +421,7 @@ export default function Blogs() {
           </div>
         </footer>
       </div>
+      <CookieBanner />
     </div>
   );
 }

@@ -83,7 +83,7 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
             {/* Logo */}
             <div className="flex-shrink-0">
               <Link to="/">
-                <img src={logo} alt="Iris Shani Logo" className="h-12 w-auto" />
+                <img src={logo} alt="לוגו איריס שני - יועצת משאבי אנוש" className="h-12 w-auto" />
               </Link>
             </div>
 

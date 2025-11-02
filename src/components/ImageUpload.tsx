@@ -178,7 +178,7 @@ export default function ImageUpload({
         <div className="mt-2">
           <img
             src={displayImage}
-            alt="Preview"
+            alt={label ? `תצוגה מקדימה של ${label}` : 'תצוגה מקדימה של תמונה'}
             className={previewClassName}
             onError={(e) => {
               e.currentTarget.style.display = 'none'
