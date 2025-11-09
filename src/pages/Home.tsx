@@ -465,11 +465,11 @@ export default function Home() {
                   </Button>
                 </div>
               </div>
-              <div className="lg:order-first animate-fade-in-left" style={{ animationDelay: '0.3s' }}>
+              <div className="lg:order-first flex justify-center animate-fade-in-left" style={{ animationDelay: '0.3s' }}>
                 <img
-                  src={heroImage}
+                  src="/images/iris.jpeg"
                   alt="איריס שני - יועצת משאבי אנוש מקצועית"
-                  className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
+                  className="rounded-2xl shadow-2xl w-[200px] h-[500px] object-cover"
                 />
               </div>
             </div>
