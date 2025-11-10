@@ -79,11 +79,13 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
       <div ref={mobileMenuRef}>
         <header className="bg-white w-full backdrop-blur-sm shadow-sm fixed top-0 left-0 right-0 z-50">
         <div className="max-w-7xl mx-auto" style={{ paddingLeft: '1rem', paddingRight: '1rem' }}>
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-16" style={{height: '80px'}}>
             {/* Logo */}
             <div className="flex-shrink-0">
               <Link to="/">
-                <img src={'./logo.png'} alt="לוגו איריס שני - יועצת משאבי אנוש" className="h-12 w-auto" />
+                <img src={'./logo.png'} alt="לוגו איריס שני - יועצת משאבי אנוש" style={{
+                  height: '66px'
+                }} className=" w-auto" />
               </Link>
             </div>
 

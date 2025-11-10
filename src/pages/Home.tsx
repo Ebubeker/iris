@@ -444,8 +444,10 @@ export default function Home() {
           ></div>
           {/* White Overlay for Better Text Readability */}
           <div className="absolute inset-0 bg-white/20 z-5"></div>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" >
+            <div className="flex justify-center items-center" style={{
+            minHeight: '600px'
+          }}>
               <div className="space-y-8 animate-fade-in-up">
                 <h1 className="text-4xl md:text-5xl text-gray-900 leading-tight text-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                   איריס שני - ליווי מקצועי לעובדים ולמעסיקים
@@ -465,13 +467,13 @@ export default function Home() {
                   </Button>
                 </div>
               </div>
-              <div className="lg:order-first flex justify-center animate-fade-in-left" style={{ animationDelay: '0.3s' }}>
+              {/* <div className="lg:order-first flex justify-center animate-fade-in-left" style={{ animationDelay: '0.3s' }}>
                 <img
                   src="/images/iris-2.jpg"
                   alt="איריס שני - יועצת משאבי אנוש מקצועית"
                   className="rounded-2xl shadow-2xl w-[200px] h-[500px] object-cover"
                 />
-              </div>
+              </div> */}
             </div>
           </div>
         </section>
