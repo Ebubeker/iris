@@ -467,7 +467,7 @@ export default function Home() {
               </div>
               <div className="lg:order-first flex justify-center animate-fade-in-left" style={{ animationDelay: '0.3s' }}>
                 <img
-                  src="/images/iris.jpeg"
+                  src="/images/iris-2.jpg"
                   alt="איריס שני - יועצת משאבי אנוש מקצועית"
                   className="rounded-2xl shadow-2xl w-[200px] h-[500px] object-cover"
                 />
