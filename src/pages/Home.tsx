@@ -283,7 +283,7 @@ export default function Home() {
       buttonText: "בדוק את הפנסיה שלך"
     },
     {
-      title: "סיומי עבודה",
+      title: "סיום העסקה",
       subtitle: "פיטורין, התפטרות או פרישה - כדי לוודא שתקבלו את כל מה שמגיע לכם",
       description: "ליווי בעזיבת מקום עבודה",
       icon: <LogOut className="h-8 w-8 text-orange-500" />,
@@ -512,7 +512,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontWeight: 500 }}>
-                עסקים קטנים ובינוניים</h2>
+              למעסיקים  - עסקים קטנים ובינוניים</h2>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Empty column for spacing */}
@@ -581,9 +581,7 @@ export default function Home() {
                 <div className="bg-white p-8 rounded-2xl shadow-lg border border-orange-100">
                   <h3 className="text-2xl font-bold text-gray-900 mb-4 text-right">המטרה שלי</h3>
                   <p className="text-gray-700 leading-relaxed text-right text-lg">
-                    לעשות סדר, להרגיע, ללוות ולהחזיר ביטחון לעובדים ולמעסיקים.
-                    אני רואה בעצמי גשר בין אנשים לעולם העבודה - "מתווכת אמון" שמחברת בין מעסיקים הוגנים
-                    שאני מאמינה בהם לבין עובדים שאני מזהה אצלם את הפוטנציאל, המחויבות והערך האנושי.
+                    תנו לי לעזור לכם לעשות סדר, להרגיע, ללוות ולהחזיר את הביטחון העצמי. קהל הלקוחות שלי הוא גם שכירים וגם מעסיקים. ביחד עם הליווי המקצועי נוכל לבנות גשר ביניכם לבין עולם התעסוקה עם אמון, חיבור בין מעסיקים הוגנים שאני מאמינה בהם לבין עובדים שיש להם את הפוטנציאל המתאים והכל תוך אמון, שקיפות, מחויבות וערך אנושי גבוה.
                   </p>
                 </div>
               </div>
@@ -776,7 +774,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontWeight: 500 }}>
-                בואו נדבר - קבלו הצעת מחיר
+          השאירו פרטים כבר עכשיו לקבלת הצעת מחיר
               </h2>
             </div>
 

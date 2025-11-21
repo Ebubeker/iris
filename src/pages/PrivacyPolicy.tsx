@@ -5,16 +5,20 @@ import SEO from '../components/SEO';
 import CookieBanner from '../components/CookieBanner';
 
 export default function PrivacyPolicy() {
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen relative" dir="rtl">
-      <SEO 
+      <SEO
         title="מדיניות פרטיות - איריס שני יועצת משאבי אנוש"
         description="מדיניות פרטיות מפורטת של איריס שני יועצת משאבי אנוש - איך אנו אוספים, משתמשים ומגנים על המידע האישי שלכם"
         keywords="מדיניות פרטיות, הגנת מידע, פרטיות, איריס שני, משאבי אנוש"
         url="/privacy-policy"
         image="/src/assets/background.png"
       />
-      
+
       <div>
         <Navbar />
 
@@ -29,7 +33,7 @@ export default function PrivacyPolicy() {
                 הגנה על הפרטיות והמידע האישי שלכם
               </p>
               <div className="text-sm text-gray-600">
-                עודכן לאחרונה: 15 בינואר 2024
+                עודכן לאחרונה: 15 ספטמבר 2025
               </div>
             </div>
           </div>
@@ -39,15 +43,15 @@ export default function PrivacyPolicy() {
         <section className="bg-white" style={{ paddingTop: '4rem', paddingBottom: '4rem' }}>
           <div className="max-w-4xl mx-auto" style={{ paddingLeft: '1rem', paddingRight: '1rem' }}>
             <div className="prose prose-lg max-w-none" style={{ direction: 'rtl', textAlign: 'right' }}>
-              
+
               <div className="mb-8">
                 <h2 className="text-2xl text-gray-900 mb-4">1. מבוא</h2>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  איריס שני יועצת משאבי אנוש ("אנו", "שלנו", "החברה") מחויבת להגנה על הפרטיות והמידע האישי של לקוחותינו. 
+                  איריס שני יועצת משאבי אנוש ("אנו", "שלנו", "החברה") מחויבת להגנה על הפרטיות והמידע האישי של לקוחותינו.
                   מדיניות פרטיות זו מסבירה איך אנו אוספים, משתמשים, מגנים ומחלקים מידע אישי.
                 </p>
                 <p className="text-gray-700 leading-relaxed">
-                  השימוש באתר זה מהווה הסכמה למדיניות פרטיות זו. אם אינכם מסכימים לתנאים המפורטים כאן, 
+                  השימוש באתר זה מהווה הסכמה למדיניות פרטיות זו. אם אינכם מסכימים לתנאים המפורטים כאן,
                   אנא הימנעו משימוש באתר.
                 </p>
               </div>
@@ -95,7 +99,7 @@ export default function PrivacyPolicy() {
               <div className="mb-8">
                 <h2 className="text-2xl text-gray-900 mb-4">5. אבטחת מידע</h2>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  אנו נוקטים באמצעי אבטחה מתאימים כדי להגן על המידע האישי שלכם מפני גישה לא מורשית, 
+                  אנו נוקטים באמצעי אבטחה מתאימים כדי להגן על המידע האישי שלכם מפני גישה לא מורשית,
                   שינוי, חשיפה או השמדה. עם זאת, אין שיטה של העברה באינטרנט או אחסון אלקטרוני שהיא 100% מאובטחת.
                 </p>
               </div>
@@ -120,7 +124,7 @@ export default function PrivacyPolicy() {
               <div className="mb-8">
                 <h2 className="text-2xl text-gray-900 mb-4">7. עוגיות (Cookies)</h2>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  האתר שלנו משתמש בעוגיות כדי לשפר את חוויית הגלישה. עוגיות הן קבצים קטנים הנשמרים 
+                  האתר שלנו משתמש בעוגיות כדי לשפר את חוויית הגלישה. עוגיות הן קבצים קטנים הנשמרים
                   במכשיר שלכם ומסייעים לנו לזכור את ההעדפות שלכם.
                 </p>
                 <p className="text-gray-700 leading-relaxed">

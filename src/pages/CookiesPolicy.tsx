@@ -5,6 +5,10 @@ import SEO from '../components/SEO';
 import CookieBanner from '../components/CookieBanner';
 
 export default function CookiesPolicy() {
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen relative" dir="rtl">
       <SEO 
@@ -29,7 +33,7 @@ export default function CookiesPolicy() {
                 איך אנו משתמשים בעוגיות באתר
               </p>
               <div className="text-sm text-gray-600">
-                עודכן לאחרונה: 15 בינואר 2024
+                עודכן לאחרונה: 15 ספטמבר 2025
               </div>
             </div>
           </div>

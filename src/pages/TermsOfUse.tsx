@@ -5,6 +5,10 @@ import SEO from '../components/SEO';
 import CookieBanner from '../components/CookieBanner';
 
 export default function TermsOfUse() {
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen relative" dir="rtl">
       <SEO 
@@ -29,8 +33,8 @@ export default function TermsOfUse() {
                 כללים והגבלות לשימוש באתר ובשירותים
               </p>
               <div className="text-sm text-gray-600">
-                עודכן לאחרונה: 15 בינואר 2024
-              </div>
+                עודכן לאחרונה: 15 ספטמבר 2025
+                </div>
             </div>
           </div>
         </section>
@@ -57,6 +61,7 @@ export default function TermsOfUse() {
                   <li>ייעוץ שכר ובדיקת זכויות עובדים</li>
                   <li>חישובי ניכויים והפרשות</li>
                   <li>בדיקת תלושי משכורת</li>
+                  <li>אין בנאמר באתר משום ייעוץ משפטי</li>
                   <li>ייעוץ בנושאי פיצויי פיטורים</li>
                   <li>הדרכה בנושאי זכויות סוציאליות</li>
                   <li>שירותי ייעוץ נוספים בתחום משאבי האנוש</li>
