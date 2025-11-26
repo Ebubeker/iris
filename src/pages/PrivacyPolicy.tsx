@@ -16,7 +16,7 @@ export default function PrivacyPolicy() {
         description="מדיניות פרטיות מפורטת של איריס שני יועצת משאבי אנוש - איך אנו אוספים, משתמשים ומגנים על המידע האישי שלכם"
         keywords="מדיניות פרטיות, הגנת מידע, פרטיות, איריס שני, משאבי אנוש"
         url="/privacy-policy"
-        image="/src/assets/background.png"
+        image="/background.png"
       />
 
       <div>

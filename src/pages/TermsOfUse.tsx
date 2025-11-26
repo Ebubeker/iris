@@ -16,7 +16,7 @@ export default function TermsOfUse() {
         description="תנאי השימוש באתר איריס שני יועצת משאבי אנוש - כללים והגבלות לשימוש באתר ובשירותים"
         keywords="תנאי שימוש, כללי אתר, הגבלות שימוש, איריס שני, משאבי אנוש"
         url="/terms-of-use"
-        image="/src/assets/background.png"
+        image="/background.png"
       />
       
       <div>
