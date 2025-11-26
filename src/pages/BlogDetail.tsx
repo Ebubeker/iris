@@ -111,7 +111,7 @@ export default function BlogDetail() {
         description={blogPost?.summary || blogPost?.subtitle || "מאמר מקצועי על זכויות עובדים וייעוץ שכר מאת איריס שני יועצת משאבי אנוש"}
         keywords={`${blogPost?.tags?.join(', ') || ''}, משאבי אנוש, זכויות עובדים, ייעוץ שכר, איריס שני`}
         url={`/blogs/${id}`}
-        image={blogPost?.thumbnail_url || "/background.png"}
+        image={blogPost?.thumbnail_url || "/og.png"}
         type="article"
         author="איריס שני"
         publishedTime={blogPost?.created_at}

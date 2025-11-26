@@ -12,7 +12,7 @@ export default function AccessibilityStatement() {
         description="הצהרת נגישות של איריס שני יועצת משאבי אנוש - מחויבותנו לשוויון זכויות ולנגישות לאנשים בעלי מוגבלויות"
         keywords="הצהרת נגישות, נגישות, שוויון זכויות, מוגבלויות, איריס שני, משאבי אנוש"
         url="/accessibility-statement"
-        image="/background.png"
+        image="/og.png"
       />
       
       <div>

@@ -16,7 +16,7 @@ export default function CookiesPolicy() {
         description="מדיניות עוגיות מפורטת של איריס שני יועצת משאבי אנוש - איך אנו משתמשים בעוגיות באתר"
         keywords="מדיניות עוגיות, cookies, עוגיות, איריס שני, משאבי אנוש"
         url="/cookies-policy"
-        image="/background.png"
+        image="/og.png"
       />
       
       <div>
