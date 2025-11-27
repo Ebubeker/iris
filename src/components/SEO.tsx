@@ -54,6 +54,9 @@ const SEO: React.FC<SEOProps> = ({
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={fullDescription} />
       <meta property="og:image" content={fullImage} />
+      <meta property="og:image:secure_url" content={fullImage} />
+      <meta property="og:image:type" content={image.endsWith('.png') ? 'image/png' : image.endsWith('.jpg') || image.endsWith('.jpeg') ? 'image/jpeg' : 'image/png'} />
+      <meta property="og:image:alt" content={fullTitle} />
       <meta property="og:url" content={fullUrl} />
       <meta property="og:site_name" content="איריס שני - יועצת משאבי אנוש" />
       <meta property="og:locale" content="he_IL" />
