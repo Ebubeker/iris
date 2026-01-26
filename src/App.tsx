@@ -14,7 +14,7 @@ export default function App() {
   return (
     <AuthProvider>
       <div className="min-h-screen relative">
-        <main>
+        <main id="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/admin" element={<Admin />} />

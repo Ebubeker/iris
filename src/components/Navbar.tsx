@@ -76,6 +76,14 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
 
   return (
     <>
+      {/* Skip to main content link for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:right-4 focus:z-[60] focus:bg-orange-500 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg"
+      >
+        דלג לתוכן הראשי
+      </a>
+
       <div ref={mobileMenuRef}>
         <header className="bg-white w-full backdrop-blur-sm shadow-sm fixed top-0 left-0 right-0 z-50">
         <div className="max-w-7xl mx-auto" style={{ paddingLeft: '1rem', paddingRight: '1rem' }}>
@@ -160,28 +168,36 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
                 <button
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                   className="text-gray-700 hover:text-orange-500 transition-colors"
-                  style={{ 
+                  style={{
                     marginLeft: '1rem',
                     display: 'block'
                   }}
+                  aria-expanded={isMobileMenuOpen}
+                  aria-controls="mobile-navigation-menu"
+                  aria-label={isMobileMenuOpen ? 'סגור תפריט ניווט' : 'פתח תפריט ניווט'}
                 >
                   {isMobileMenuOpen ? (
-                    <X className="h-6 w-6" />
+                    <X className="h-6 w-6" aria-hidden="true" />
                   ) : (
-                    <Menu className="h-6 w-6" />
+                    <Menu className="h-6 w-6" aria-hidden="true" />
                   )}
                 </button>
               )}
               
               {/* WhatsApp CTA - Hidden on mobile when menu is open */}
-              <Button 
+              <Button
                 className={`bg-orange-500 hover:bg-orange-600 text-white ${
                   isMobileMenuOpen && !showBackButton ? 'hidden' : ''
-                }`} 
+                }`}
                 asChild
               >
-                <a href="https://wa.me/972508836955" target="_blank" rel="noopener noreferrer">
-                  <MessageCircle className="mr-2 h-4 w-4" />
+                <a
+                  href="https://wa.me/972508836955"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="צור קשר בוואטסאפ"
+                >
+                  <MessageCircle className="mr-2 h-4 w-4" aria-hidden="true" />
                   <span className="hidden sm:inline">צור קשר עכשיו</span>
                   <span className="sm:hidden">צור קשר</span>
                 </a>
@@ -192,7 +208,8 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
 
         {/* Mobile Navigation Menu */}
         {!showBackButton && isMobile && (
-          <div 
+          <div
+            id="mobile-navigation-menu"
             className={`transition-all duration-300 ease-in-out overflow-hidden ${
               isMobileMenuOpen ? 'block' : 'hidden'
             }`}
@@ -268,13 +285,14 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
                 {/* Mobile WhatsApp CTA */}
                 <div style={{ marginTop: '1rem', paddingTop: '1rem' }} className="border-t border-gray-200">
                   <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white" asChild>
-                    <a 
-                      href="https://wa.me/972508836955" 
-                      target="_blank" 
+                    <a
+                      href="https://wa.me/972508836955"
+                      target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setIsMobileMenuOpen(false)}
+                      aria-label="צור קשר בוואטסאפ"
                     >
-                      <MessageCircle className="mr-2 h-4 w-4" />
+                      <MessageCircle className="mr-2 h-4 w-4" aria-hidden="true" />
                       צור קשר עכשיו
                     </a>
                   </Button>

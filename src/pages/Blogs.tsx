@@ -122,11 +122,15 @@ export default function Blogs() {
           <div
             className="flex items-center justify-center"
             style={{ paddingTop: "5rem", paddingBottom: "5rem" }}
+            role="status"
+            aria-live="polite"
+            aria-busy="true"
           >
             <div className="text-center">
               <Loader2
                 className="h-8 w-8 animate-spin mx-auto text-orange-500"
                 style={{ marginBottom: "1rem" }}
+                aria-hidden="true"
               />
               <p className="text-gray-600">טוען פוסטים...</p>
             </div>

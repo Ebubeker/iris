@@ -871,13 +871,21 @@ export default function Home() {
                   </div>
 
                   {submitStatus === 'success' && (
-                    <div className="bg-green-50 border border-green-200 rounded-md p-4 text-right">
+                    <div
+                      className="bg-green-50 border border-green-200 rounded-md p-4 text-right"
+                      role="alert"
+                      aria-live="polite"
+                    >
                       <p className="text-green-800">תודה! ההודעה נשלחה בהצלחה. נחזור אליכם בהקדם.</p>
                     </div>
                   )}
 
                   {submitStatus === 'error' && (
-                    <div className="bg-red-50 border border-red-200 rounded-md p-4 text-right">
+                    <div
+                      className="bg-red-50 border border-red-200 rounded-md p-4 text-right"
+                      role="alert"
+                      aria-live="assertive"
+                    >
                       <p className="text-red-800">אירעה שגיאה. אנא נסו שוב או צרו קשר ישירות.</p>
                     </div>
                   )}

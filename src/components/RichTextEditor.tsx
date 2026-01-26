@@ -188,8 +188,10 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             className={editor.isActive('bold') ? 'bg-orange-100 text-orange-700' : ''}
             type="button"
+            aria-label="מודגש"
+            aria-pressed={editor.isActive('bold')}
           >
-            <Bold className="h-4 w-4" />
+            <Bold className="h-4 w-4" aria-hidden="true" />
           </Button>
           <Button
             variant="outline"
@@ -200,8 +202,10 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             className={editor.isActive('italic') ? 'bg-orange-100 text-orange-700' : ''}
             type="button"
+            aria-label="נטוי"
+            aria-pressed={editor.isActive('italic')}
           >
-            <Italic className="h-4 w-4" />
+            <Italic className="h-4 w-4" aria-hidden="true" />
           </Button>
           <Button
             variant="outline"
@@ -212,8 +216,10 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             className={editor.isActive('underline') ? 'bg-orange-100 text-orange-700' : ''}
             type="button"
+            aria-label="קו תחתון"
+            aria-pressed={editor.isActive('underline')}
           >
-            <UnderlineIcon className="h-4 w-4" />
+            <UnderlineIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
 
@@ -228,6 +234,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             className={editor.isActive('paragraph') ? 'bg-orange-100 text-orange-700' : ''}
             type="button"
+            aria-label="פסקה רגילה"
+            aria-pressed={editor.isActive('paragraph')}
           >
             P
           </Button>
@@ -240,6 +248,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             className={editor.isActive('heading', { level: 1 }) ? 'bg-orange-100 text-orange-700' : ''}
             type="button"
+            aria-label="כותרת ראשית"
+            aria-pressed={editor.isActive('heading', { level: 1 })}
           >
             H1
           </Button>
@@ -252,6 +262,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             className={editor.isActive('heading', { level: 2 }) ? 'bg-orange-100 text-orange-700' : ''}
             type="button"
+            aria-label="כותרת משנית"
+            aria-pressed={editor.isActive('heading', { level: 2 })}
           >
             H2
           </Button>
@@ -264,6 +276,8 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             className={editor.isActive('heading', { level: 3 }) ? 'bg-orange-100 text-orange-700' : ''}
             type="button"
+            aria-label="כותרת משנה"
+            aria-pressed={editor.isActive('heading', { level: 3 })}
           >
             H3
           </Button>
@@ -280,8 +294,10 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             className={editor.isActive('bulletList') ? 'bg-orange-100 text-orange-700' : ''}
             type="button"
+            aria-label="רשימת תבליטים"
+            aria-pressed={editor.isActive('bulletList')}
           >
-            <List className="h-4 w-4" />
+            <List className="h-4 w-4" aria-hidden="true" />
           </Button>
           <Button
             variant="outline"
@@ -292,8 +308,10 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             className={editor.isActive('orderedList') ? 'bg-orange-100 text-orange-700' : ''}
             type="button"
+            aria-label="רשימה ממוספרת"
+            aria-pressed={editor.isActive('orderedList')}
           >
-            <ListOrdered className="h-4 w-4" />
+            <ListOrdered className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
 
@@ -308,8 +326,10 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             className={editor.isActive({ textAlign: 'right' }) ? 'bg-orange-100 text-orange-700' : ''}
             type="button"
+            aria-label="יישור לימין"
+            aria-pressed={editor.isActive({ textAlign: 'right' })}
           >
-            <AlignRight className="h-4 w-4" />
+            <AlignRight className="h-4 w-4" aria-hidden="true" />
           </Button>
           <Button
             variant="outline"
@@ -320,8 +340,10 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             className={editor.isActive({ textAlign: 'center' }) ? 'bg-orange-100 text-orange-700' : ''}
             type="button"
+            aria-label="יישור למרכז"
+            aria-pressed={editor.isActive({ textAlign: 'center' })}
           >
-            <AlignCenter className="h-4 w-4" />
+            <AlignCenter className="h-4 w-4" aria-hidden="true" />
           </Button>
           <Button
             variant="outline"
@@ -332,8 +354,10 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             className={editor.isActive({ textAlign: 'left' }) ? 'bg-orange-100 text-orange-700' : ''}
             type="button"
+            aria-label="יישור לשמאל"
+            aria-pressed={editor.isActive({ textAlign: 'left' })}
           >
-            <AlignLeft className="h-4 w-4" />
+            <AlignLeft className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
 
@@ -346,6 +370,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             onChange={(e) => setLinkUrl(e.target.value)}
             className="px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500"
             dir="ltr"
+            aria-label="כתובת קישור"
           />
           <Button
             variant="outline"
@@ -356,8 +381,9 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             disabled={!linkUrl}
             type="button"
+            aria-label="הוסף קישור"
           >
-            <LinkIcon className="h-4 w-4" />
+            <LinkIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
           <Button
             variant="outline"
@@ -368,8 +394,9 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             disabled={!editor.isActive('link')}
             type="button"
+            aria-label="הסר קישור"
           >
-            <Unlink className="h-4 w-4" />
+            <Unlink className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
 
@@ -382,6 +409,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             onChange={(e) => setImageUrl(e.target.value)}
             className="px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500"
             dir="ltr"
+            aria-label="כתובת תמונה"
           />
           <Button
             variant="outline"
@@ -392,8 +420,9 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             disabled={!imageUrl}
             type="button"
+            aria-label="הוסף תמונה מכתובת"
           >
-            <ImageIcon className="h-4 w-4" />
+            <ImageIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
           <input
             ref={fileInputRef}
@@ -401,6 +430,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             accept="image/*"
             onChange={handleFileChange}
             className="hidden"
+            aria-label="העלה תמונה מהמחשב"
           />
           <Button
             variant="outline"
@@ -412,11 +442,12 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             disabled={uploading}
             className="bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
             type="button"
+            aria-label="העלה תמונה מהמחשב"
           >
             {uploading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
             ) : (
-              <Upload className="h-4 w-4" />
+              <Upload className="h-4 w-4" aria-hidden="true" />
             )}
           </Button>
         </div>
@@ -432,8 +463,9 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             disabled={!editor.can().undo()}
             type="button"
+            aria-label="בטל פעולה אחרונה"
           >
-            <Undo className="h-4 w-4" />
+            <Undo className="h-4 w-4" aria-hidden="true" />
           </Button>
           <Button
             variant="outline"
@@ -444,8 +476,9 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
             }}
             disabled={!editor.can().redo()}
             type="button"
+            aria-label="בצע שוב"
           >
-            <Redo className="h-4 w-4" />
+            <Redo className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
 
@@ -460,7 +493,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
                 type="button"
                 onClick={() => setIsPreviewOpen(true)}
               >
-                <Eye className="h-4 w-4 mr-2" />
+                <Eye className="h-4 w-4 mr-2" aria-hidden="true" />
                 תצוגה מקדימה
               </Button>
             </DialogTrigger>

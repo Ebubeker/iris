@@ -63,9 +63,15 @@ export default function BlogDetail() {
           <Navbar />
 
           {/* Loading State */}
-          <div className="flex items-center justify-center" style={{ paddingTop: '5rem', paddingBottom: '5rem' }}>
+          <div
+            className="flex items-center justify-center"
+            style={{ paddingTop: '5rem', paddingBottom: '5rem' }}
+            role="status"
+            aria-live="polite"
+            aria-busy="true"
+          >
             <div className="text-center">
-              <Loader2 className="h-8 w-8 animate-spin mx-auto text-orange-500" style={{ marginBottom: '1rem' }} />
+              <Loader2 className="h-8 w-8 animate-spin mx-auto text-orange-500" style={{ marginBottom: '1rem' }} aria-hidden="true" />
               <p className="text-gray-600">טוען פוסט...</p>
             </div>
           </div>
@@ -86,7 +92,12 @@ export default function BlogDetail() {
           <Navbar showBackButton backButtonText="חזור לבלוג" backButtonHref="/blogs" />
 
           {/* Error State */}
-          <div className="flex items-center justify-center" style={{ paddingTop: '5rem', paddingBottom: '5rem' }}>
+          <div
+            className="flex items-center justify-center"
+            style={{ paddingTop: '5rem', paddingBottom: '5rem' }}
+            role="alert"
+            aria-live="assertive"
+          >
             <div className="text-center bg-white rounded-2xl shadow-lg max-w-md mx-auto" style={{ padding: '3rem' }}>
               <h3 className="text-xl font-medium text-gray-900" style={{ marginBottom: '0.5rem' }}>
                 פוסט לא נמצא
