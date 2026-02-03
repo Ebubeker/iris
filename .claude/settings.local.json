@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pandoc:*)",
+      "Bash(pip install:*)",
+      "Bash(npm run build:*)"
+    ]
+  }
+}
