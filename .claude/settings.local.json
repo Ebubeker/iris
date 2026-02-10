@@ -3,7 +3,9 @@
     "allow": [
       "Bash(pandoc:*)",
       "Bash(pip install:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git fetch:*)"
     ]
   }
 }
