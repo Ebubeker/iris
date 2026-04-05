@@ -117,7 +117,7 @@ export default function BlogDetail() {
 
   return (
     <div className="min-h-screen relative" dir="rtl">
-      <SEO 
+      <SEO
         title={blogPost?.title || "מאמר - איריס שני יועצת משאבי אנוש"}
         description={blogPost?.summary || blogPost?.subtitle || "מאמר מקצועי על זכויות עובדים וייעוץ שכר מאת איריס שני יועצת משאבי אנוש"}
         keywords={`${blogPost?.tags?.join(', ') || ''}, משאבי אנוש, זכויות עובדים, ייעוץ שכר, איריס שני`}
@@ -129,6 +129,11 @@ export default function BlogDetail() {
         modifiedTime={blogPost?.updated_at}
         section="משאבי אנוש"
         tags={blogPost?.tags || []}
+        breadcrumbs={[
+          { name: 'דף הבית', url: '/' },
+          { name: 'בלוג', url: '/blogs' },
+          { name: blogPost?.title || 'מאמר', url: `/blogs/${id}` },
+        ]}
       />
       {/* Background Image */}
       <div

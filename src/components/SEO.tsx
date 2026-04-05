@@ -6,6 +6,8 @@ interface SEOProps {
   description?: string;
   keywords?: string;
   image?: string;
+  imageWidth?: string;
+  imageHeight?: string;
   url?: string;
   type?: 'website' | 'article';
   author?: string;
@@ -14,6 +16,7 @@ interface SEOProps {
   section?: string;
   tags?: string[];
   noindex?: boolean;
+  breadcrumbs?: { name: string; url: string }[];
 }
 
 const SEO: React.FC<SEOProps> = ({
@@ -28,10 +31,13 @@ const SEO: React.FC<SEOProps> = ({
   modifiedTime,
   section,
   tags = [],
-  noindex = false
+  noindex = false,
+  breadcrumbs,
+  imageWidth = '1200',
+  imageHeight = '630',
 }) => {
   const fullTitle = title.includes("איריס שני") ? title : `${title} | איריס שני - יועצת משאבי אנוש`;
-  const fullDescription = description;
+  const fullDescription = description.length > 160 ? description.slice(0, 157) + '...' : description;
   const fullImage = image.startsWith('http') ? image : `https://iris-hr.work${image}`;
   const fullUrl = url.startsWith('http') ? url : `https://iris-hr.work${url}`;
 
@@ -56,6 +62,8 @@ const SEO: React.FC<SEOProps> = ({
       <meta property="og:image" content={fullImage} />
       <meta property="og:image:secure_url" content={fullImage} />
       <meta property="og:image:type" content={image.endsWith('.png') ? 'image/png' : image.endsWith('.jpg') || image.endsWith('.jpeg') ? 'image/jpeg' : 'image/png'} />
+      <meta property="og:image:width" content={imageWidth} />
+      <meta property="og:image:height" content={imageHeight} />
       <meta property="og:image:alt" content={fullTitle} />
       <meta property="og:url" content={fullUrl} />
       <meta property="og:site_name" content="איריס שני - יועצת משאבי אנוש" />
@@ -145,6 +153,22 @@ const SEO: React.FC<SEOProps> = ({
           }
         })}
       </script>
+
+      {/* Structured Data - BreadcrumbList */}
+      {breadcrumbs && breadcrumbs.length > 0 && (
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": breadcrumbs.map((crumb, index) => ({
+              "@type": "ListItem",
+              "position": index + 1,
+              "name": crumb.name,
+              "item": crumb.url.startsWith('http') ? crumb.url : `https://iris-hr.work${crumb.url}`
+            }))
+          })}
+        </script>
+      )}
     </Helmet>
   );
 };
