@@ -566,8 +566,26 @@ export default function Blogs() {
                   מידע משפטי
                 </h3>
                 <div className="space-y-2">
-                  <p className="text-gray-300">מדיניות פרטיות</p>
-                  <p className="text-gray-300">תנאי שימוש</p>
+                  <p>
+                    <Link to="/privacy-policy" className="text-gray-300 hover:text-orange-500 transition-colors">
+                      מדיניות פרטיות
+                    </Link>
+                  </p>
+                  <p>
+                    <Link to="/terms-of-use" className="text-gray-300 hover:text-orange-500 transition-colors">
+                      תנאי שימוש
+                    </Link>
+                  </p>
+                  <p>
+                    <Link to="/cookies-policy" className="text-gray-300 hover:text-orange-500 transition-colors">
+                      מדיניות עוגיות
+                    </Link>
+                  </p>
+                  <p>
+                    <Link to="/accessibility-statement" className="text-gray-300 hover:text-orange-500 transition-colors">
+                      הצהרת נגישות
+                    </Link>
+                  </p>
                 </div>
               </div>
             </div>
