@@ -17,6 +17,7 @@ interface SEOProps {
   tags?: string[];
   noindex?: boolean;
   breadcrumbs?: { name: string; url: string }[];
+  services?: { name: string; description: string; url?: string }[];
 }
 
 const SEO: React.FC<SEOProps> = ({
@@ -35,6 +36,7 @@ const SEO: React.FC<SEOProps> = ({
   breadcrumbs,
   imageWidth = '1200',
   imageHeight = '630',
+  services,
 }) => {
   const fullTitle = title.includes("איריס שני") ? title : `${title} | איריס שני - יועצת משאבי אנוש`;
   const fullDescription = description.length > 160 ? description.slice(0, 157) + '...' : description;
@@ -110,49 +112,131 @@ const SEO: React.FC<SEOProps> = ({
       <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       
-      {/* Structured Data - Organization */}
+      {/* Structured Data - LocalBusiness (ProfessionalService) */}
       <script type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "Organization",
+          "@type": "ProfessionalService",
+          "@id": "https://iris-hr.work/#localbusiness",
           "name": "איריס שני - יועצת משאבי אנוש",
+          "alternateName": "Iris Shani HR",
           "url": "https://iris-hr.work",
-          "logo": fullImage,
-          "description": fullDescription,
+          "logo": "https://iris-hr.work/logo.png",
+          "image": fullImage,
+          "description": "יועצת משאבי אנוש מקצועית המתמחה בייעוץ שכר, בדיקת זכויות עובדים, ניכויים והפרשות. שירותים מקצועיים לעובדים ומעסיקים.",
+          "telephone": "+972-50-8836955",
+          "email": "info@iris-hr.work",
+          "priceRange": "₪₪",
           "address": {
             "@type": "PostalAddress",
             "addressLocality": "גבעת ברנר",
+            "addressRegion": "מחוז המרכז",
             "addressCountry": "IL"
           },
-          "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": "+972-50-8836955",
-            "contactType": "customer service",
-            "email": "info@iris-hr.work"
+          "areaServed": {
+            "@type": "Country",
+            "name": "ישראל"
           },
+          "founder": {
+            "@type": "Person",
+            "name": "איריס שני",
+            "jobTitle": "יועצת משאבי אנוש"
+          },
+          "knowsAbout": [
+            "ייעוץ שכר",
+            "זכויות עובדים",
+            "ניכויים והפרשות",
+            "תלוש משכורת",
+            "פיצויי פיטורים",
+            "הסכמי עבודה",
+            "פנסיה וקרן השתלמות"
+          ],
           "sameAs": [
             "https://iris-hr.work"
           ]
         })}
       </script>
-      
+
       {/* Structured Data - Person (for author) */}
       <script type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Person",
+          "@id": "https://iris-hr.work/#person",
           "name": "איריס שני",
           "jobTitle": "יועצת משאבי אנוש",
           "description": "יועצת משאבי אנוש מקצועית המתמחה בייעוץ שכר וזכויות עובדים",
           "email": "info@iris-hr.work",
           "telephone": "+972-50-8836955",
+          "image": "https://iris-hr.work/iris-og.png",
           "address": {
             "@type": "PostalAddress",
             "addressLocality": "גבעת ברנר",
             "addressCountry": "IL"
+          },
+          "worksFor": {
+            "@id": "https://iris-hr.work/#localbusiness"
           }
         })}
       </script>
+
+      {/* Structured Data - Services */}
+      {services && services.length > 0 && services.map((service, index) => (
+        <script key={`service-${index}`} type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": service.name,
+            "description": service.description,
+            "serviceType": service.name,
+            "url": service.url
+              ? (service.url.startsWith('http') ? service.url : `https://iris-hr.work${service.url}`)
+              : fullUrl,
+            "provider": {
+              "@id": "https://iris-hr.work/#localbusiness"
+            },
+            "areaServed": {
+              "@type": "Country",
+              "name": "ישראל"
+            }
+          })}
+        </script>
+      ))}
+
+      {/* Structured Data - BlogPosting (for articles) */}
+      {type === 'article' && publishedTime && (
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": title,
+            "description": fullDescription,
+            "image": fullImage,
+            "datePublished": publishedTime,
+            "dateModified": modifiedTime || publishedTime,
+            "author": {
+              "@type": "Person",
+              "name": author,
+              "url": "https://iris-hr.work"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "איריס שני - יועצת משאבי אנוש",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://iris-hr.work/logo.png"
+              }
+            },
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": fullUrl
+            },
+            "articleSection": section,
+            "keywords": tags && tags.length > 0 ? tags.join(', ') : undefined,
+            "inLanguage": "he-IL"
+          })}
+        </script>
+      )}
 
       {/* Structured Data - BreadcrumbList */}
       {breadcrumbs && breadcrumbs.length > 0 && (

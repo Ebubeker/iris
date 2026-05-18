@@ -422,6 +422,18 @@ export default function Home() {
         keywords="יועצת משאבי אנוש, ייעוץ שכר, זכויות עובדים, ניכויים והפרשות, בדיקת שכר, תלוש משכורת, פיצויי פיטורים, חופשה, מחלה, פנסיה, קרן השתלמות, איריס שני"
         url="/"
         image="/iris-og.png"
+        services={[
+          ...employeeServices.map((s) => ({
+            name: s.title,
+            description: s.fullDescription,
+            url: '/#employee-services',
+          })),
+          ...employerServices.map((s) => ({
+            name: s.title,
+            description: s.fullDescription,
+            url: '/#employer-services',
+          })),
+        ]}
       />
       {/* Background Image */}
       <div

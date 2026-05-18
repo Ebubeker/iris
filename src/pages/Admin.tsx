@@ -289,18 +289,36 @@ export default function Admin() {
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-orange-500" />
-          <p className="text-gray-600">טוען...</p>
+      <>
+        <SEO
+          title="ניהול בלוג - איריס שני יועצת משאבי אנוש"
+          description="ניהול תוכן הבלוג - יצירה ועריכה של מאמרים מקצועיים על משאבי אנוש"
+          url="/admin"
+          noindex={true}
+        />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-orange-500" />
+            <p className="text-gray-600">טוען...</p>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   // Show login form if not authenticated
   if (!user) {
-    return <LoginForm />;
+    return (
+      <>
+        <SEO
+          title="התחברות - ניהול איריס שני"
+          description="התחברות למערכת הניהול"
+          url="/admin"
+          noindex={true}
+        />
+        <LoginForm />
+      </>
+    );
   }
 
   return (
