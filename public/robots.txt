@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://iris-hr.work/sitemap.xml
+Sitemap: https://www.iris-hr.work/sitemap.xml

@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
-const SITE_URL = 'https://iris-hr.work'
+const SITE_URL = 'https://www.iris-hr.work'
 
 const staticPages = [
   { loc: '/', changefreq: 'weekly', priority: '1.0' },

@@ -25,7 +25,7 @@ const SEO: React.FC<SEOProps> = ({
   description = "יועצת משאבי אנוש מקצועית המתמחה בייעוץ שכר, בדיקת זכויות עובדים, ניכויים והפרשות. שירותים מקצועיים לעובדים ומעסיקים עם ניסיון של שנים בתחום.",
   keywords = "יועצת משאבי אנוש, ייעוץ שכר, זכויות עובדים, ניכויים והפרשות, בדיקת שכר, תלוש משכורת, פיצויי פיטורים, חופשה, מחלה, פנסיה, קרן השתלמות",
   image = "/iris-og.png",
-  url = "https://iris-hr.work",
+  url = "https://www.iris-hr.work",
   type = "website",
   author = "איריס שני",
   publishedTime,
@@ -40,8 +40,8 @@ const SEO: React.FC<SEOProps> = ({
 }) => {
   const fullTitle = title.includes("איריס שני") ? title : `${title} | איריס שני - יועצת משאבי אנוש`;
   const fullDescription = description.length > 160 ? description.slice(0, 157) + '...' : description;
-  const fullImage = image.startsWith('http') ? image : `https://iris-hr.work${image}`;
-  const fullUrl = url.startsWith('http') ? url : `https://iris-hr.work${url}`;
+  const fullImage = image.startsWith('http') ? image : `https://www.iris-hr.work${image}`;
+  const fullUrl = url.startsWith('http') ? url : `https://www.iris-hr.work${url}`;
 
   return (
     <Helmet>
@@ -117,11 +117,11 @@ const SEO: React.FC<SEOProps> = ({
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
-          "@id": "https://iris-hr.work/#localbusiness",
+          "@id": "https://www.iris-hr.work/#localbusiness",
           "name": "איריס שני - יועצת משאבי אנוש",
           "alternateName": "Iris Shani HR",
-          "url": "https://iris-hr.work",
-          "logo": "https://iris-hr.work/logo.png",
+          "url": "https://www.iris-hr.work",
+          "logo": "https://www.iris-hr.work/logo.png",
           "image": fullImage,
           "description": "יועצת משאבי אנוש מקצועית המתמחה בייעוץ שכר, בדיקת זכויות עובדים, ניכויים והפרשות. שירותים מקצועיים לעובדים ומעסיקים.",
           "telephone": "+972-50-8836955",
@@ -152,7 +152,7 @@ const SEO: React.FC<SEOProps> = ({
             "פנסיה וקרן השתלמות"
           ],
           "sameAs": [
-            "https://iris-hr.work"
+            "https://www.iris-hr.work"
           ]
         })}
       </script>
@@ -162,20 +162,20 @@ const SEO: React.FC<SEOProps> = ({
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Person",
-          "@id": "https://iris-hr.work/#person",
+          "@id": "https://www.iris-hr.work/#person",
           "name": "איריס שני",
           "jobTitle": "יועצת משאבי אנוש",
           "description": "יועצת משאבי אנוש מקצועית המתמחה בייעוץ שכר וזכויות עובדים",
           "email": "info@iris-hr.work",
           "telephone": "+972-50-8836955",
-          "image": "https://iris-hr.work/iris-og.png",
+          "image": "https://www.iris-hr.work/iris-og.png",
           "address": {
             "@type": "PostalAddress",
             "addressLocality": "גבעת ברנר",
             "addressCountry": "IL"
           },
           "worksFor": {
-            "@id": "https://iris-hr.work/#localbusiness"
+            "@id": "https://www.iris-hr.work/#localbusiness"
           }
         })}
       </script>
@@ -190,10 +190,10 @@ const SEO: React.FC<SEOProps> = ({
             "description": service.description,
             "serviceType": service.name,
             "url": service.url
-              ? (service.url.startsWith('http') ? service.url : `https://iris-hr.work${service.url}`)
+              ? (service.url.startsWith('http') ? service.url : `https://www.iris-hr.work${service.url}`)
               : fullUrl,
             "provider": {
-              "@id": "https://iris-hr.work/#localbusiness"
+              "@id": "https://www.iris-hr.work/#localbusiness"
             },
             "areaServed": {
               "@type": "Country",
@@ -217,14 +217,14 @@ const SEO: React.FC<SEOProps> = ({
             "author": {
               "@type": "Person",
               "name": author,
-              "url": "https://iris-hr.work"
+              "url": "https://www.iris-hr.work"
             },
             "publisher": {
               "@type": "Organization",
               "name": "איריס שני - יועצת משאבי אנוש",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://iris-hr.work/logo.png"
+                "url": "https://www.iris-hr.work/logo.png"
               }
             },
             "mainEntityOfPage": {
@@ -248,7 +248,7 @@ const SEO: React.FC<SEOProps> = ({
               "@type": "ListItem",
               "position": index + 1,
               "name": crumb.name,
-              "item": crumb.url.startsWith('http') ? crumb.url : `https://iris-hr.work${crumb.url}`
+              "item": crumb.url.startsWith('http') ? crumb.url : `https://www.iris-hr.work${crumb.url}`
             }))
           })}
         </script>
