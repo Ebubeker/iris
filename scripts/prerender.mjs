@@ -3,7 +3,7 @@
 // and snapshots the resulting HTML for each route so Google sees real content.
 
 import http from 'node:http';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sirv from 'sirv';
@@ -67,9 +67,20 @@ async function getBlogRoutes() {
   return (data || []).map((p) => `/blogs/${p.id}`);
 }
 
-function startServer() {
-  const serve = sirv(DIST, { single: true, dev: false });
-  const server = http.createServer((req, res) => serve(req, res, () => res.end()));
+function startServer(shellHtml) {
+  // sirv serves files that exist on disk. For any path that doesn't match
+  // a real file we always return the ORIGINAL empty shell — never a
+  // previously-prerendered file. This matters once we start overwriting
+  // dist/index.html with the prerendered homepage: subsequent routes must
+  // still get a clean shell with an empty <div id="root"></div>, otherwise
+  // React fails to remount and the snapshot is junk.
+  const serve = sirv(DIST, { single: false, dev: false });
+  const server = http.createServer((req, res) => {
+    serve(req, res, () => {
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.end(shellHtml);
+    });
+  });
   return new Promise((resolve) => {
     server.listen(0, '127.0.0.1', () => {
       const { port } = server.address();
@@ -121,7 +132,9 @@ async function main() {
   const routes = [...STATIC_ROUTES, ...blogRoutes];
   console.log(`Will prerender ${routes.length} routes (${STATIC_ROUTES.length} static + ${blogRoutes.length} blog posts)`);
 
-  const { server, port } = await startServer();
+  // Snapshot the original Vite-built shell before any prerendering overwrites it.
+  const shellHtml = await readFile(join(DIST, 'index.html'), 'utf8');
+  const { server, port } = await startServer(shellHtml);
   const launchOptions = await getLaunchOptions();
   console.log(`Using Chromium: ${launchOptions.executablePath}`);
   const browser = await puppeteer.launch(launchOptions);
