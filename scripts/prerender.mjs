@@ -24,6 +24,8 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
 
 const STATIC_ROUTES = [
   '/',
+  '/about',
+  '/faq',
   '/blogs',
   '/privacy-policy',
   '/terms-of-use',
@@ -102,6 +104,12 @@ async function main() {
   });
   const page = await browser.newPage();
   await page.setViewport({ width: 1280, height: 800 });
+
+  // Capture browser console errors so silent failures surface
+  page.on('pageerror', (err) => console.error('  [browser pageerror]', err.message));
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') console.error('  [browser console.error]', msg.text());
+  });
 
   let ok = 0;
   let failed = 0;

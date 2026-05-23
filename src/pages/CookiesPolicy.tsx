@@ -223,7 +223,7 @@ export default function CookiesPolicy() {
                 <div className="space-y-2">
                   <p><a href="/#employee-services" className="text-gray-300 hover:text-orange-500 transition-colors">שירותים לעובדים</a></p>
                   <p><a href="/#employer-services" className="text-gray-300 hover:text-orange-500 transition-colors">שירותים למעסיקים</a></p>
-                  <p><a href="/#about" className="text-gray-300 hover:text-orange-500 transition-colors">אודותיי</a></p>
+                  <p><Link to="/about" className="text-gray-300 hover:text-orange-500 transition-colors">אודות</Link></p>
                   <p><Link to="/blogs" className="text-gray-300 hover:text-orange-500 transition-colors">בלוג</Link></p>
                 </div>
               </div>

@@ -545,10 +545,10 @@ export default function Blogs() {
                   </p>
                   <p>
                     <Link
-                      to="/#about"
+                      to="/about"
                       className="text-gray-300 hover:text-orange-500 transition-colors"
                     >
-                      אודותיי
+                      אודות
                     </Link>
                   </p>
                   <p>
