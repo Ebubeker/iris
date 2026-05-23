@@ -7,8 +7,32 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sirv from 'sirv';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 import { createClient } from '@supabase/supabase-js';
+
+// Pick the right Chromium for the environment.
+// Vercel build containers don't have the system libs that puppeteer's bundled
+// Chrome needs (libnspr4.so etc.), so we use @sparticuz/chromium — a slim,
+// self-contained build designed for serverless. Locally we use the full
+// puppeteer package's bundled Chromium.
+const isServerlessBuild = !!(process.env.VERCEL || process.env.CI);
+
+async function getLaunchOptions() {
+  if (isServerlessBuild) {
+    const { default: chromium } = await import('@sparticuz/chromium');
+    return {
+      executablePath: await chromium.executablePath(),
+      args: chromium.args,
+      headless: chromium.headless,
+    };
+  }
+  const { default: fullPuppeteer } = await import('puppeteer');
+  return {
+    executablePath: await fullPuppeteer.executablePath(),
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  };
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -98,10 +122,9 @@ async function main() {
   console.log(`Will prerender ${routes.length} routes (${STATIC_ROUTES.length} static + ${blogRoutes.length} blog posts)`);
 
   const { server, port } = await startServer();
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  const launchOptions = await getLaunchOptions();
+  console.log(`Using Chromium: ${launchOptions.executablePath}`);
+  const browser = await puppeteer.launch(launchOptions);
   const page = await browser.newPage();
   await page.setViewport({ width: 1280, height: 800 });
 
