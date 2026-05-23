@@ -5,6 +5,8 @@ const SITE_URL = 'https://www.iris-hr.work'
 
 const staticPages = [
   { loc: '/', changefreq: 'weekly', priority: '1.0' },
+  { loc: '/about', changefreq: 'monthly', priority: '0.8' },
+  { loc: '/faq', changefreq: 'monthly', priority: '0.7' },
   { loc: '/blogs', changefreq: 'daily', priority: '0.8' },
   { loc: '/privacy-policy', changefreq: 'yearly', priority: '0.3' },
   { loc: '/terms-of-use', changefreq: 'yearly', priority: '0.3' },

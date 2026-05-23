@@ -137,21 +137,27 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
                 >
                   שירותים למעסיקים
                 </button>
-                <button 
-                  onClick={() => handleSectionClick('about')}
+                <Link
+                  to="/about"
                   className="text-gray-700 hover:text-orange-500 transition-colors ml-8"
                 >
                   אודותיי
-                </button>
-                <Link 
-                  to="/blogs" 
+                </Link>
+                <Link
+                  to="/blogs"
                   className={`transition-colors ml-8 ${
-                    activeSection === 'blogs' 
-                      ? 'text-orange-500 font-medium' 
+                    activeSection === 'blogs'
+                      ? 'text-orange-500 font-medium'
                       : 'text-gray-700 hover:text-orange-500'
                   }`}
                 >
                   בלוג
+                </Link>
+                <Link
+                  to="/faq"
+                  className="text-gray-700 hover:text-orange-500 transition-colors ml-8"
+                >
+                  שאלות נפוצות
                 </Link>
                 <button 
                   onClick={() => handleSectionClick('contact')}
@@ -254,24 +260,33 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
                   >
                     שירותים למעסיקים
                   </button>
-                  <button 
-                    onClick={() => handleSectionClick('about')}
+                  <Link
+                    to="/about"
                     className="block w-full text-right text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-colors rounded-lg"
                     style={{ padding: '0.75rem 1rem', display: 'block', width: '100%' }}
+                    onClick={() => setIsMobileMenuOpen(false)}
                   >
                     אודותיי
-                  </button>
-                  <Link 
-                    to="/blogs" 
+                  </Link>
+                  <Link
+                    to="/blogs"
                     className={`block w-full text-right transition-colors rounded-lg ${
-                      activeSection === 'blogs' 
-                        ? 'text-orange-500 font-medium bg-orange-50' 
+                      activeSection === 'blogs'
+                        ? 'text-orange-500 font-medium bg-orange-50'
                         : 'text-gray-700 hover:text-orange-500 hover:bg-gray-50'
                     }`}
                     style={{ padding: '0.75rem 1rem', display: 'block', width: '100%' }}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     בלוג
+                  </Link>
+                  <Link
+                    to="/faq"
+                    className="block w-full text-right text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-colors rounded-lg"
+                    style={{ padding: '0.75rem 1rem', display: 'block', width: '100%' }}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    שאלות נפוצות
                   </Link>
                   <button 
                     onClick={() => handleSectionClick('contact')}

@@ -288,7 +288,7 @@ export default function BlogDetail() {
                 <div className="space-y-2">
                   <p><Link to="/#employee-services" className="text-gray-300 hover:text-orange-500 transition-colors">שירותים לעובדים</Link></p>
                   <p><Link to="/#employer-services" className="text-gray-300 hover:text-orange-500 transition-colors">שירותים למעסיקים</Link></p>
-                  <p><Link to="/#about" className="text-gray-300 hover:text-orange-500 transition-colors">אודותיי</Link></p>
+                  <p><Link to="/about" className="text-gray-300 hover:text-orange-500 transition-colors">אודות</Link></p>
                   <p><Link to="/blogs" className="text-gray-300 hover:text-orange-500 transition-colors">בלוג</Link></p>
                 </div>
               </div>

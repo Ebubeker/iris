@@ -18,6 +18,7 @@ interface SEOProps {
   noindex?: boolean;
   breadcrumbs?: { name: string; url: string }[];
   services?: { name: string; description: string; url?: string }[];
+  faqs?: { question: string; answer: string }[];
 }
 
 const SEO: React.FC<SEOProps> = ({
@@ -37,6 +38,7 @@ const SEO: React.FC<SEOProps> = ({
   imageWidth = '1200',
   imageHeight = '630',
   services,
+  faqs,
 }) => {
   const fullTitle = title.includes("איריס שני") ? title : `${title} | איריס שני - יועצת משאבי אנוש`;
   const fullDescription = description.length > 160 ? description.slice(0, 157) + '...' : description;
@@ -250,6 +252,24 @@ const SEO: React.FC<SEOProps> = ({
               "name": crumb.name,
               "item": crumb.url.startsWith('http') ? crumb.url : `https://www.iris-hr.work${crumb.url}`
             }))
+          })}
+        </script>
+      )}
+
+      {/* Structured Data - FAQPage */}
+      {faqs && faqs.length > 0 && (
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqs.map((faq) => ({
+              "@type": "Question",
+              "name": faq.question,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.answer,
+              },
+            })),
           })}
         </script>
       )}
