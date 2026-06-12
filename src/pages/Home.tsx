@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { MessageCircle, Phone, Mail, MapPin, User, FileText, PiggyBank, LogOut, BriefcaseBusiness, X, GitGraph, Cog, Send, Calendar } from 'lucide-react';
+import { MessageCircle, Phone, Mail, MapPin, User, FileText, PiggyBank, LogOut, BriefcaseBusiness, X, GitGraph, Cog, Send, Calendar, Quote, PenLine } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
@@ -9,7 +9,8 @@ import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { Badge } from '../components/ui/badge';
 import { blogService } from '../services/blogService';
-import { BlogPost } from '../lib/supabase';
+import { testimonialService } from '../services/testimonialService';
+import { BlogPost, Testimonial } from '../lib/supabase';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import SEO from '../components/SEO';
@@ -42,6 +43,13 @@ export default function Home() {
   const [featuredBlogPosts, setFeaturedBlogPosts] = useState<BlogPost[]>([]);
   const [blogLoading, setBlogLoading] = useState(true);
 
+  // Testimonials state
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [isTestimonialDialogOpen, setIsTestimonialDialogOpen] = useState(false);
+  const [testimonialForm, setTestimonialForm] = useState({ name: '', role: '', content: '' });
+  const [testimonialSubmitting, setTestimonialSubmitting] = useState(false);
+  const [testimonialStatus, setTestimonialStatus] = useState<'success' | 'error' | null>(null);
+
   // Contact form state
   const [formData, setFormData] = useState({
     name: '',
@@ -60,6 +68,7 @@ export default function Home() {
   // Load featured blog posts on component mount
   useEffect(() => {
     loadFeaturedBlogs();
+    loadTestimonials();
   }, []);
 
   // Handle scroll to section when hash changes
@@ -105,6 +114,47 @@ export default function Home() {
     } finally {
       setBlogLoading(false);
     }
+  };
+
+  const loadTestimonials = async () => {
+    try {
+      const approved = await testimonialService.getApprovedTestimonials();
+      setTestimonials(approved);
+    } catch (error) {
+      console.error('Error loading testimonials:', error);
+      setTestimonials([]);
+    }
+  };
+
+  const handleTestimonialInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setTestimonialForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleTestimonialSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setTestimonialSubmitting(true);
+    setTestimonialStatus(null);
+
+    try {
+      await testimonialService.submitTestimonial({
+        name: testimonialForm.name.trim(),
+        role: testimonialForm.role.trim() || undefined,
+        content: testimonialForm.content.trim(),
+      });
+      setTestimonialStatus('success');
+      setTestimonialForm({ name: '', role: '', content: '' });
+    } catch (error) {
+      console.error('Testimonial submission error:', error);
+      setTestimonialStatus('error');
+    } finally {
+      setTestimonialSubmitting(false);
+    }
+  };
+
+  const openTestimonialDialog = () => {
+    setTestimonialStatus(null);
+    setIsTestimonialDialogOpen(true);
   };
 
   const formatBlogDate = (dateString: string) => {
@@ -655,6 +705,64 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Testimonials Section */}
+        <section id="testimonials" style={{ paddingTop: '8rem', paddingBottom: '8rem', marginTop: '4rem' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontWeight: 500 }}>
+                לקוחות ממליצים
+              </h2>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                מילים חמות מאנשים שליוויתי בדרך
+              </p>
+            </div>
+
+            {testimonials.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                {testimonials.map((testimonial) => (
+                  <Card
+                    key={testimonial.id}
+                    className="bg-white border-0 shadow-lg rounded-2xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 h-full"
+                  >
+                    <CardContent className="p-8 flex flex-col h-full text-right">
+                      <Quote className="h-8 w-8 text-orange-500 mb-4" aria-hidden="true" />
+                      <p className="text-gray-700 leading-relaxed flex-grow" style={{ whiteSpace: 'pre-line' }}>
+                        {testimonial.content}
+                      </p>
+                      <div className="border-t border-orange-100 mt-6 pt-4">
+                        <p className="font-semibold text-gray-900">{testimonial.name}</p>
+                        {testimonial.role && (
+                          <p className="text-sm text-gray-500">{testimonial.role}</p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center bg-white/40 backdrop-blur-sm rounded-2xl shadow-lg mx-auto mb-12" style={{ padding: '3rem 2rem', maxWidth: '42rem' }}>
+                <Quote className="h-10 w-10 text-orange-500 mx-auto mb-4" aria-hidden="true" />
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  ליוויתי אתכם בבדיקת תלוש, בהסכם עבודה או בסיום העסקה?
+                  <br />
+                  אשמח אם תשתפו כאן במילים שלכם - זה עוזר לאחרים לדעת למה לצפות.
+                </p>
+              </div>
+            )}
+
+            <div className="text-center">
+              <Button
+                size="lg"
+                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4"
+                onClick={openTestimonialDialog}
+              >
+                <PenLine className="ml-2 h-5 w-5" />
+                כתבו המלצה
+              </Button>
+            </div>
+          </div>
+        </section>
+
         {/* Blog Section */}
         <section id="blog" style={{ paddingTop: '8rem', paddingBottom: '8rem', marginTop: '4rem' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1058,6 +1166,125 @@ export default function Home() {
           </DialogContent>
         </Dialog>
 
+        {/* Testimonial Submission Dialog */}
+        <Dialog open={isTestimonialDialogOpen} onOpenChange={setIsTestimonialDialogOpen}>
+          <DialogContent dir="rtl" style={{ maxWidth: '36rem' }}>
+            <DialogHeader>
+              <DialogTitle className="text-2xl text-right">כתבו המלצה</DialogTitle>
+            </DialogHeader>
+
+            {testimonialStatus === 'success' ? (
+              <div className="space-y-6 pt-4 text-right">
+                <div
+                  className="bg-green-50 border border-green-200 rounded-md p-4 text-right"
+                  role="alert"
+                  aria-live="polite"
+                >
+                  <p className="text-green-800">
+                    תודה רבה על המילים החמות! ההמלצה התקבלה ותוצג באתר לאחר אישור.
+                  </p>
+                </div>
+                <div className="flex justify-center">
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsTestimonialDialogOpen(false)}
+                    className="px-8"
+                  >
+                    סגור
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleTestimonialSubmit} className="space-y-6 pt-4" dir="rtl">
+                <div>
+                  <Label htmlFor="testimonial-name" className="text-right block mb-2 text-gray-700">שם מלא *</Label>
+                  <Input
+                    id="testimonial-name"
+                    name="name"
+                    type="text"
+                    required
+                    minLength={2}
+                    maxLength={100}
+                    value={testimonialForm.name}
+                    onChange={handleTestimonialInputChange}
+                    className="text-right h-12 text-base"
+                    placeholder="השם שיוצג לצד ההמלצה"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="testimonial-role" className="text-right block mb-2 text-gray-700">השירות שקיבלתם (לא חובה)</Label>
+                  <Input
+                    id="testimonial-role"
+                    name="role"
+                    type="text"
+                    maxLength={150}
+                    value={testimonialForm.role}
+                    onChange={handleTestimonialInputChange}
+                    className="text-right h-12 text-base"
+                    placeholder="לדוגמה: בדיקת תלוש שכר, ליווי בסיום העסקה"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="testimonial-content" className="text-right block mb-2 text-gray-700">ההמלצה שלכם *</Label>
+                  <Textarea
+                    id="testimonial-content"
+                    name="content"
+                    required
+                    minLength={10}
+                    maxLength={2000}
+                    value={testimonialForm.content}
+                    onChange={handleTestimonialInputChange}
+                    style={{ minHeight: '120px' }}
+                    className="text-right min-h-[120px]"
+                    placeholder="ספרו במילים שלכם איך היה הליווי ומה הוא נתן לכם..."
+                  />
+                </div>
+
+                {testimonialStatus === 'error' && (
+                  <div
+                    className="bg-red-50 border border-red-200 rounded-md p-4 text-right"
+                    role="alert"
+                    aria-live="assertive"
+                  >
+                    <p className="text-red-800">אירעה שגיאה בשליחה. אנא נסו שוב מאוחר יותר.</p>
+                  </div>
+                )}
+
+                <div className="flex justify-center gap-4 pt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsTestimonialDialogOpen(false)}
+                    className="px-8"
+                    disabled={testimonialSubmitting}
+                  >
+                    ביטול
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={testimonialSubmitting}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-8"
+                  >
+                    {testimonialSubmitting ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        שולח...
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-2">
+                        <Send className="h-5 w-5" />
+                        שלחו המלצה
+                      </span>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+
         {/* Footer */}
         <footer className="bg-gray-900 text-white py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1073,6 +1300,7 @@ export default function Home() {
                 <div className="space-y-2">
                   <p><a href="#employee-services" className="text-gray-300 hover:text-orange-500 transition-colors">שירותים לעובדים</a></p>
                   <p><a href="#employer-services" className="text-gray-300 hover:text-orange-500 transition-colors">שירותים למעסיקים</a></p>
+                  <p><a href="#testimonials" className="text-gray-300 hover:text-orange-500 transition-colors">המלצות</a></p>
                   <p><Link to="/about" className="text-gray-300 hover:text-orange-500 transition-colors">אודות</Link></p>
                   <p><Link to="/blogs" className="text-gray-300 hover:text-orange-500 transition-colors">בלוג</Link></p>
                 </div>

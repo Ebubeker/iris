@@ -30,3 +30,13 @@ export interface User {
   email: string
   created_at: string
 }
+
+export interface Testimonial {
+  id: string
+  name: string
+  role?: string
+  content: string
+  approved: boolean
+  created_at: string
+  updated_at: string
+}

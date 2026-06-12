@@ -5,11 +5,12 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
 import { Badge } from '../components/ui/badge';
-import { Plus, X, Save, List, Edit, Trash2, Eye, LogOut, Loader2, Star, Search, Tag } from 'lucide-react';
+import { Plus, X, Save, List, Edit, Trash2, Eye, LogOut, Loader2, Star, Search, Tag, Quote, Check } from 'lucide-react';
 import RichTextEditor from '../components/RichTextEditor';
 import { useAuth } from '../contexts/AuthContext';
 import { blogService } from '../services/blogService';
-import { BlogPost } from '../lib/supabase';
+import { testimonialService } from '../services/testimonialService';
+import { BlogPost, Testimonial } from '../lib/supabase';
 import LoginForm from '../components/LoginForm';
 import ImageUpload from '../components/ImageUpload';
 import SEO from '../components/SEO';
@@ -20,8 +21,12 @@ import { useNavigate } from 'react-router-dom';
 export default function Admin() {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState<'list' | 'create'>('list');
+  const [currentPage, setCurrentPage] = useState<'list' | 'create' | 'testimonials'>('list');
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loadingTestimonials, setLoadingTestimonials] = useState(false);
+  const [newTestimonial, setNewTestimonial] = useState({ name: '', role: '', content: '' });
+  const [savingTestimonial, setSavingTestimonial] = useState(false);
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
@@ -85,8 +90,67 @@ export default function Admin() {
   useEffect(() => {
     if (user) {
       loadBlogPosts();
+      loadTestimonials();
     }
   }, [user]);
+
+  const loadTestimonials = async () => {
+    setLoadingTestimonials(true);
+    try {
+      const items = await testimonialService.getAllTestimonials();
+      setTestimonials(items);
+    } catch (error) {
+      console.error('Error loading testimonials:', error);
+    } finally {
+      setLoadingTestimonials(false);
+    }
+  };
+
+  const handleAddTestimonial = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTestimonial.name.trim() || !newTestimonial.content.trim()) {
+      alert('שם ותוכן ההמלצה הם שדות חובה');
+      return;
+    }
+    setSavingTestimonial(true);
+    try {
+      const created = await testimonialService.createTestimonial({
+        name: newTestimonial.name.trim(),
+        role: newTestimonial.role.trim() || undefined,
+        content: newTestimonial.content.trim(),
+      });
+      setTestimonials([created, ...testimonials]);
+      setNewTestimonial({ name: '', role: '', content: '' });
+      alert('ההמלצה נוספה ופורסמה באתר!');
+    } catch (error) {
+      console.error('Error adding testimonial:', error);
+      alert('שגיאה בהוספת ההמלצה');
+    } finally {
+      setSavingTestimonial(false);
+    }
+  };
+
+  const toggleTestimonialApproved = async (testimonial: Testimonial) => {
+    try {
+      const updated = await testimonialService.setApproved(testimonial.id, !testimonial.approved);
+      setTestimonials(testimonials.map(t => t.id === testimonial.id ? updated : t));
+    } catch (error) {
+      console.error('Error updating testimonial:', error);
+      alert('שגיאה בעדכון ההמלצה');
+    }
+  };
+
+  const deleteTestimonial = async (id: string) => {
+    if (confirm('האם אתה בטוח שברצונך למחוק את ההמלצה?')) {
+      try {
+        await testimonialService.deleteTestimonial(id);
+        setTestimonials(testimonials.filter(t => t.id !== id));
+      } catch (error) {
+        console.error('Error deleting testimonial:', error);
+        alert('שגיאה במחיקת ההמלצה');
+      }
+    }
+  };
 
   const loadBlogPosts = async () => {
     setLoadingPosts(true);
@@ -335,7 +399,7 @@ export default function Admin() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <h1 className="text-2xl font-bold text-gray-900">
-              {currentPage === 'list' ? 'ניהול בלוג פוסטים' : 'יצירת בלוג פוסט'}
+              {currentPage === 'list' ? 'ניהול בלוג פוסטים' : currentPage === 'create' ? 'יצירת בלוג פוסט' : 'ניהול המלצות'}
             </h1>
             <div className="flex items-center gap-6">
               <nav className="flex items-center space-x-reverse gap-2">
@@ -360,6 +424,22 @@ export default function Admin() {
                 >
                   <Plus className="h-4 w-4 ml-2" />
                   פוסט חדש
+                </button>
+                <button
+                  onClick={() => setCurrentPage('testimonials')}
+                  className={`flex items-center px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg ${
+                    currentPage === 'testimonials'
+                      ? 'bg-orange-500 text-white shadow-sm'
+                      : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50'
+                  }`}
+                >
+                  <Quote className="h-4 w-4 ml-2" />
+                  המלצות
+                  {testimonials.filter(t => !t.approved).length > 0 && (
+                    <Badge className="bg-orange-500 text-white text-xs mr-2">
+                      {testimonials.filter(t => !t.approved).length}
+                    </Badge>
+                  )}
                 </button>
               </nav>
               <div className="flex items-center gap-4">
@@ -801,7 +881,7 @@ export default function Admin() {
               </>
             )}
           </div>
-        ) : (
+        ) : currentPage === 'create' ? (
           /* Create/Edit Blog Post */
           <div className="space-y-8 mb-8">
             <Card className="bg-white shadow-md" style={{marginTop: '40px'}}>
@@ -1046,6 +1126,226 @@ export default function Admin() {
                 </CardContent>
               </Card>
             )} */}
+          </div>
+        ) : (
+          /* Testimonials Management */
+          <div className="space-y-8">
+            <div className="flex justify-between items-center" style={{ marginTop: '20px' }}>
+              <h2 className="text-xl font-semibold text-gray-900">
+                ניהול המלצות ({testimonials.length})
+              </h2>
+            </div>
+
+            {/* Add Testimonial Manually */}
+            <Card className="bg-white shadow-md">
+              <CardHeader>
+                <CardTitle className="text-xl">הוספת המלצה ידנית</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleAddTestimonial} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="new-testimonial-name" className="text-base font-medium">
+                        שם הלקוח *
+                      </Label>
+                      <Input
+                        id="new-testimonial-name"
+                        value={newTestimonial.name}
+                        onChange={(e) => setNewTestimonial({ ...newTestimonial, name: e.target.value })}
+                        placeholder="השם שיוצג באתר"
+                        className="text-right"
+                        maxLength={100}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="new-testimonial-role" className="text-base font-medium">
+                        השירות שניתן (אופציונלי)
+                      </Label>
+                      <Input
+                        id="new-testimonial-role"
+                        value={newTestimonial.role}
+                        onChange={(e) => setNewTestimonial({ ...newTestimonial, role: e.target.value })}
+                        placeholder="לדוגמה: בדיקת תלוש שכר"
+                        className="text-right"
+                        maxLength={150}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="new-testimonial-content" className="text-base font-medium">
+                      תוכן ההמלצה *
+                    </Label>
+                    <textarea
+                      id="new-testimonial-content"
+                      value={newTestimonial.content}
+                      onChange={(e) => setNewTestimonial({ ...newTestimonial, content: e.target.value })}
+                      placeholder="הדביקי כאן המלצה שקיבלת מלקוח (למשל בוואטסאפ)"
+                      className="w-full px-3 py-2 text-right border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 min-h-[100px] resize-vertical"
+                      rows={4}
+                      maxLength={2000}
+                      required
+                    />
+                    <p className="text-sm text-gray-500">
+                      המלצה שמתווספת כאן מתפרסמת באתר מיד, ללא צורך באישור נוסף
+                    </p>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button
+                      type="submit"
+                      className="bg-orange-500 hover:bg-orange-600 text-white px-8"
+                      disabled={savingTestimonial}
+                    >
+                      {savingTestimonial ? (
+                        <>
+                          <Loader2 className="h-4 w-4 ml-2 animate-spin" />
+                          שומר...
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="h-4 w-4 ml-2" />
+                          הוסף המלצה
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+
+            {loadingTestimonials ? (
+              <Card className="bg-white shadow-md">
+                <CardContent className="p-12 text-center">
+                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-orange-500" />
+                  <p className="text-gray-600">טוען המלצות...</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <>
+                {/* Pending Testimonials */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 border-b pb-2">
+                    <Quote className="h-5 w-5 text-orange-500" />
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      ממתינות לאישור ({testimonials.filter(t => !t.approved).length})
+                    </h3>
+                  </div>
+                  <div className="grid gap-4">
+                    {testimonials.filter(t => !t.approved).length > 0 ? (
+                      testimonials.filter(t => !t.approved).map((testimonial) => (
+                        <Card key={testimonial.id} className="bg-orange-50 border-orange-200 shadow-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start gap-4">
+                              <div className="flex-1">
+                                <p className="text-gray-800 leading-relaxed mb-3" style={{ whiteSpace: 'pre-line' }}>
+                                  {testimonial.content}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                  <span className="font-semibold">{testimonial.name}</span>
+                                  {testimonial.role && <span> · {testimonial.role}</span>}
+                                  <span> · התקבלה ב: {formatDate(testimonial.created_at)}</span>
+                                </p>
+                              </div>
+                              <div className="flex gap-2 flex-shrink-0">
+                                <Button
+                                  size="sm"
+                                  onClick={() => toggleTestimonialApproved(testimonial)}
+                                  className="bg-orange-500 hover:bg-orange-600 text-white"
+                                  title="אשר ופרסם באתר"
+                                >
+                                  <Check className="h-4 w-4 ml-1" />
+                                  אשר ופרסם
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => deleteTestimonial(testimonial.id)}
+                                  title="מחק המלצה"
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))
+                    ) : (
+                      <Card className="bg-gray-50 border-gray-200">
+                        <CardContent className="p-8 text-center">
+                          <Quote className="h-10 w-10 mx-auto mb-3 text-gray-400" />
+                          <p className="text-gray-600 text-sm">
+                            אין המלצות שממתינות לאישור. המלצות שלקוחות ישלחו מהאתר יופיעו כאן.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                </div>
+
+                {/* Approved Testimonials */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 border-b pb-2">
+                    <Check className="h-5 w-5 text-orange-500" />
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      מפורסמות באתר ({testimonials.filter(t => t.approved).length})
+                    </h3>
+                  </div>
+                  <div className="grid gap-4">
+                    {testimonials.filter(t => t.approved).length > 0 ? (
+                      testimonials.filter(t => t.approved).map((testimonial) => (
+                        <Card key={testimonial.id} className="bg-white shadow-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start gap-4">
+                              <div className="flex-1">
+                                <p className="text-gray-800 leading-relaxed mb-3" style={{ whiteSpace: 'pre-line' }}>
+                                  {testimonial.content}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                  <span className="font-semibold">{testimonial.name}</span>
+                                  {testimonial.role && <span> · {testimonial.role}</span>}
+                                  <span> · התקבלה ב: {formatDate(testimonial.created_at)}</span>
+                                </p>
+                                <div className="flex items-center justify-between mt-3 pt-3 border-t" style={{ paddingTop: '10px' }}>
+                                  <Label htmlFor={`approved-${testimonial.id}`} className="text-sm font-medium text-gray-700 cursor-pointer">
+                                    מוצגת באתר
+                                  </Label>
+                                  <Switch
+                                    id={`approved-${testimonial.id}`}
+                                    checked={testimonial.approved}
+                                    onCheckedChange={() => toggleTestimonialApproved(testimonial)}
+                                  />
+                                </div>
+                              </div>
+                              <div className="flex gap-2 flex-shrink-0">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => deleteTestimonial(testimonial.id)}
+                                  title="מחק המלצה"
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))
+                    ) : (
+                      <Card className="bg-gray-50 border-gray-200">
+                        <CardContent className="p-8 text-center">
+                          <Quote className="h-10 w-10 mx-auto mb-3 text-gray-400" />
+                          <p className="text-gray-600 text-sm">
+                            אין עדיין המלצות מפורסמות. אפשר להוסיף המלצה ידנית למעלה או לאשר המלצות שיתקבלו מהאתר.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
       </main>

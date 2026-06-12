@@ -143,6 +143,12 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
                 >
                   אודותיי
                 </Link>
+                <button
+                  onClick={() => handleSectionClick('testimonials')}
+                  className="text-gray-700 hover:text-orange-500 transition-colors ml-8"
+                >
+                  המלצות
+                </button>
                 <Link
                   to="/blogs"
                   className={`transition-colors ml-8 ${
@@ -268,6 +274,13 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
                   >
                     אודותיי
                   </Link>
+                  <button
+                    onClick={() => handleSectionClick('testimonials')}
+                    className="block w-full text-right text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-colors rounded-lg"
+                    style={{ padding: '0.75rem 1rem', display: 'block', width: '100%' }}
+                  >
+                    המלצות
+                  </button>
                   <Link
                     to="/blogs"
                     className={`block w-full text-right transition-colors rounded-lg ${
