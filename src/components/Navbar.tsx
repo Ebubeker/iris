@@ -3,6 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { MessageCircle, Menu, X } from 'lucide-react';
+import { WHATSAPP_URL } from '../data/contact';
+import { trackWhatsAppClick } from '../utils/analytics';
 // @ts-ignore
 import logo from 'figma:asset/5238df62aa5d3c4e2b5040b827041631a24389b9.png';
 
@@ -204,8 +206,9 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
                 asChild
               >
                 <a
-                  href="https://wa.me/972508836955"
+                  href={WHATSAPP_URL}
                   target="_blank"
+                  onClick={() => trackWhatsAppClick('navbar')}
                   rel="noopener noreferrer"
                   aria-label="צור קשר בוואטסאפ"
                 >
@@ -314,8 +317,9 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
                 <div style={{ marginTop: '1rem', paddingTop: '1rem' }} className="border-t border-gray-200">
                   <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white" asChild>
                     <a
-                      href="https://wa.me/972508836955"
+                      href={WHATSAPP_URL}
                       target="_blank"
+                      onClick={() => trackWhatsAppClick('navbar')}
                       rel="noopener noreferrer"
                       onClick={() => setIsMobileMenuOpen(false)}
                       aria-label="צור קשר בוואטסאפ"
@@ -375,7 +379,7 @@ export default function Navbar({ activeSection, showBackButton, backButtonText =
                 style={{ paddingLeft: '2rem', paddingRight: '2rem', marginRight: '1rem' }}
                 asChild
               >
-                <a href="https://wa.me/972508836955" target="_blank" rel="noopener noreferrer">
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" onClick={() => trackWhatsAppClick('navbar-mobile')}>
                   <MessageCircle className="mr-2 h-4 w-4" />
                   בואו נדבר
                 </a>

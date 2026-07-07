@@ -3,11 +3,26 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 const SITE_URL = 'https://www.iris-hr.work'
 
+const serviceSlugs = [
+  'salary-slip-analysis',
+  'employment-contract-review',
+  'authorities-liaison',
+  'pension-review',
+  'end-of-employment',
+  'job-search-guidance',
+  'personalized-recruitment',
+]
+
 const staticPages = [
   { loc: '/', changefreq: 'weekly', priority: '1.0' },
   { loc: '/about', changefreq: 'monthly', priority: '0.8' },
   { loc: '/faq', changefreq: 'monthly', priority: '0.7' },
   { loc: '/blogs', changefreq: 'daily', priority: '0.8' },
+  ...serviceSlugs.map((slug) => ({
+    loc: `/services/${slug}`,
+    changefreq: 'monthly',
+    priority: '0.9',
+  })),
   { loc: '/privacy-policy', changefreq: 'yearly', priority: '0.3' },
   { loc: '/terms-of-use', changefreq: 'yearly', priority: '0.3' },
   { loc: '/cookies-policy', changefreq: 'yearly', priority: '0.3' },

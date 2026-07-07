@@ -46,6 +46,17 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   process.exit(1);
 }
 
+// Keep these service slugs in sync with src/data/services.tsx.
+const SERVICE_SLUGS = [
+  'salary-slip-analysis',
+  'employment-contract-review',
+  'authorities-liaison',
+  'pension-review',
+  'end-of-employment',
+  'job-search-guidance',
+  'personalized-recruitment',
+];
+
 const STATIC_ROUTES = [
   '/',
   '/about',
@@ -55,6 +66,7 @@ const STATIC_ROUTES = [
   '/terms-of-use',
   '/cookies-policy',
   '/accessibility-statement',
+  ...SERVICE_SLUGS.map((slug) => `/services/${slug}`),
 ];
 
 async function getBlogRoutes() {
@@ -147,8 +159,10 @@ async function main() {
     if (msg.type() === 'error') console.error('  [browser console.error]', msg.text());
   });
 
+  const staticSet = new Set(STATIC_ROUTES);
   let ok = 0;
-  let failed = 0;
+  let staticFailed = 0;
+  let blogFailed = 0;
   for (const route of routes) {
     try {
       await snapshot(page, port, route);
@@ -156,15 +170,22 @@ async function main() {
       ok++;
     } catch (err) {
       console.error(`  fail ${route}: ${err.message}`);
-      failed++;
+      if (staticSet.has(route)) staticFailed++;
+      else blogFailed++;
     }
   }
 
   await browser.close();
   server.close();
 
-  console.log(`\nPrerender done: ${ok} succeeded, ${failed} failed`);
-  if (failed > 0) process.exit(1);
+  console.log(`\nPrerender done: ${ok} succeeded, ${staticFailed} static failed, ${blogFailed} blog failed`);
+  // Only fail the build if a core static route (home, services, about, ...) broke.
+  // A single bad blog post must not block the entire deploy — it just won't be
+  // prerendered and will still work as a client-rendered fallback.
+  if (staticFailed > 0) {
+    console.error('One or more static routes failed to prerender — failing the build.');
+    process.exit(1);
+  }
 }
 
 main().catch((err) => {

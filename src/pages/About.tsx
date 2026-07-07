@@ -221,7 +221,7 @@ export default function About() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8" style={{ marginBottom: '2rem' }}>
               <div className="text-center md:text-right">
                 <h3 className="text-lg" style={{ marginBottom: '1rem' }}>צור קשר</h3>
-                <p className="text-gray-300">טלפון: 0508836955</p>
+                <p className="text-gray-300">טלפון: <a href="tel:+972508836955" className="hover:text-orange-500 transition-colors" dir="ltr">050-883-6955</a></p>
                 <p className="text-gray-300">מייל: info@iris-hr.work</p>
                 <p className="text-gray-300">מיקום: גבעת ברנר</p>
               </div>

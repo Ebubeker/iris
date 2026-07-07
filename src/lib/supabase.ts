@@ -40,3 +40,16 @@ export interface Testimonial {
   created_at: string
   updated_at: string
 }
+
+export interface Lead {
+  id: string
+  name: string
+  email: string
+  phone?: string
+  service?: string
+  message?: string
+  status: 'new' | 'contacted' | 'closed'
+  source?: string
+  created_at: string
+  updated_at: string
+}

@@ -5,12 +5,13 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
 import { Badge } from '../components/ui/badge';
-import { Plus, X, Save, List, Edit, Trash2, Eye, LogOut, Loader2, Star, Search, Tag, Quote, Check } from 'lucide-react';
+import { Plus, X, Save, List, Edit, Trash2, Eye, LogOut, Loader2, Star, Search, Tag, Quote, Check, Inbox, Phone, Mail } from 'lucide-react';
 import RichTextEditor from '../components/RichTextEditor';
 import { useAuth } from '../contexts/AuthContext';
 import { blogService } from '../services/blogService';
 import { testimonialService } from '../services/testimonialService';
-import { BlogPost, Testimonial } from '../lib/supabase';
+import { leadService } from '../services/leadService';
+import { BlogPost, Testimonial, Lead } from '../lib/supabase';
 import LoginForm from '../components/LoginForm';
 import ImageUpload from '../components/ImageUpload';
 import SEO from '../components/SEO';
@@ -21,10 +22,12 @@ import { useNavigate } from 'react-router-dom';
 export default function Admin() {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState<'list' | 'create' | 'testimonials'>('list');
+  const [currentPage, setCurrentPage] = useState<'list' | 'create' | 'testimonials' | 'leads'>('list');
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loadingTestimonials, setLoadingTestimonials] = useState(false);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loadingLeads, setLoadingLeads] = useState(false);
   const [newTestimonial, setNewTestimonial] = useState({ name: '', role: '', content: '' });
   const [savingTestimonial, setSavingTestimonial] = useState(false);
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
@@ -91,8 +94,43 @@ export default function Admin() {
     if (user) {
       loadBlogPosts();
       loadTestimonials();
+      loadLeads();
     }
   }, [user]);
+
+  const loadLeads = async () => {
+    setLoadingLeads(true);
+    try {
+      const items = await leadService.getLeads();
+      setLeads(items);
+    } catch (error) {
+      console.error('Error loading leads:', error);
+    } finally {
+      setLoadingLeads(false);
+    }
+  };
+
+  const updateLeadStatus = async (lead: Lead, status: Lead['status']) => {
+    try {
+      const updated = await leadService.setStatus(lead.id, status);
+      setLeads((prev) => prev.map((l) => (l.id === lead.id ? updated : l)));
+    } catch (error) {
+      console.error('Error updating lead status:', error);
+      alert('שגיאה בעדכון סטטוס הפנייה');
+    }
+  };
+
+  const removeLead = async (id: string) => {
+    if (confirm('האם למחוק את הפנייה?')) {
+      try {
+        await leadService.deleteLead(id);
+        setLeads((prev) => prev.filter((l) => l.id !== id));
+      } catch (error) {
+        console.error('Error deleting lead:', error);
+        alert('שגיאה במחיקת הפנייה');
+      }
+    }
+  };
 
   const loadTestimonials = async () => {
     setLoadingTestimonials(true);
@@ -399,10 +437,26 @@ export default function Admin() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <h1 className="text-2xl font-bold text-gray-900">
-              {currentPage === 'list' ? 'ניהול בלוג פוסטים' : currentPage === 'create' ? 'יצירת בלוג פוסט' : 'ניהול המלצות'}
+              {currentPage === 'list' ? 'ניהול בלוג פוסטים' : currentPage === 'create' ? 'יצירת בלוג פוסט' : currentPage === 'testimonials' ? 'ניהול המלצות' : 'פניות מהאתר'}
             </h1>
             <div className="flex items-center gap-6">
               <nav className="flex items-center space-x-reverse gap-2">
+                <button
+                  onClick={() => setCurrentPage('leads')}
+                  className={`flex items-center px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg ${
+                    currentPage === 'leads'
+                      ? 'bg-orange-500 text-white shadow-sm'
+                      : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50'
+                  }`}
+                >
+                  <Inbox className="h-4 w-4 ml-2" />
+                  פניות
+                  {leads.filter((l) => l.status === 'new').length > 0 && (
+                    <Badge className="bg-orange-500 text-white text-xs mr-2">
+                      {leads.filter((l) => l.status === 'new').length}
+                    </Badge>
+                  )}
+                </button>
                 <button
                   onClick={() => setCurrentPage('list')}
                   className={`flex items-center px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg ${
@@ -1127,7 +1181,7 @@ export default function Admin() {
               </Card>
             )} */}
           </div>
-        ) : (
+        ) : currentPage === 'testimonials' ? (
           /* Testimonials Management */
           <div className="space-y-8">
             <div className="flex justify-between items-center" style={{ marginTop: '20px' }}>
@@ -1345,6 +1399,129 @@ export default function Admin() {
                   </div>
                 </div>
               </>
+            )}
+          </div>
+        ) : (
+          /* Leads Management */
+          <div className="space-y-8">
+            <div className="flex justify-between items-center" style={{ marginTop: '20px' }}>
+              <h2 className="text-xl font-semibold text-gray-900">
+                פניות מהאתר ({leads.length})
+              </h2>
+              <Button onClick={loadLeads} variant="outline" size="sm" disabled={loadingLeads}>
+                <Loader2 className={`h-4 w-4 ml-2 ${loadingLeads ? 'animate-spin' : 'hidden'}`} />
+                רענן
+              </Button>
+            </div>
+
+            {loadingLeads ? (
+              <Card className="bg-white shadow-md">
+                <CardContent className="p-12 text-center">
+                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-orange-500" />
+                  <p className="text-gray-600">טוען פניות...</p>
+                </CardContent>
+              </Card>
+            ) : leads.length === 0 ? (
+              <Card className="bg-gray-50 border-gray-200">
+                <CardContent className="p-8 text-center">
+                  <Inbox className="h-10 w-10 mx-auto mb-3 text-gray-400" />
+                  <p className="text-gray-600 text-sm">
+                    אין עדיין פניות. כל פנייה שתישלח מטופס "קבלו הצעת מחיר" באתר תופיע כאן.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-4">
+                {leads.map((lead) => {
+                  const statusLabel =
+                    lead.status === 'new' ? 'חדשה' : lead.status === 'contacted' ? 'טופלה' : 'סגורה';
+                  const statusColor =
+                    lead.status === 'new'
+                      ? 'bg-orange-500 text-white'
+                      : lead.status === 'contacted'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-400 text-white';
+                  return (
+                    <Card
+                      key={lead.id}
+                      className={`shadow-sm ${lead.status === 'new' ? 'bg-orange-50 border-orange-200' : 'bg-white'}`}
+                    >
+                      <CardContent className="p-6">
+                        <div className="flex justify-between items-start gap-4 flex-wrap">
+                          <div className="flex-1 min-w-[240px]">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h3 className="text-lg font-semibold text-gray-900">{lead.name}</h3>
+                              <Badge className={`text-xs ${statusColor}`}>{statusLabel}</Badge>
+                              {lead.service && (
+                                <Badge variant="outline" className="text-xs">{lead.service}</Badge>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap gap-4 text-sm text-gray-700 mb-3">
+                              <a href={`tel:${lead.phone || ''}`} className="flex items-center gap-1 hover:text-orange-500" dir="ltr">
+                                <Phone className="h-4 w-4" /> {lead.phone || '—'}
+                              </a>
+                              <a href={`mailto:${lead.email}`} className="flex items-center gap-1 hover:text-orange-500" dir="ltr">
+                                <Mail className="h-4 w-4" /> {lead.email}
+                              </a>
+                            </div>
+                            {lead.message && (
+                              <p className="text-gray-700 text-sm bg-white/70 rounded-md p-3 border border-gray-100 mb-2" style={{ whiteSpace: 'pre-line' }}>
+                                {lead.message}
+                              </p>
+                            )}
+                            <p className="text-xs text-gray-500">התקבלה ב: {formatDate(lead.created_at)}</p>
+                          </div>
+                          <div className="flex gap-2 flex-shrink-0">
+                            {lead.status !== 'contacted' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => updateLeadStatus(lead, 'contacted')}
+                                title="סמן כטופלה"
+                                className="hover:bg-blue-50"
+                              >
+                                <Check className="h-4 w-4 ml-1" />
+                                טופלה
+                              </Button>
+                            )}
+                            {lead.status !== 'closed' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => updateLeadStatus(lead, 'closed')}
+                                title="סגור פנייה"
+                                className="hover:bg-gray-100"
+                              >
+                                סגור
+                              </Button>
+                            )}
+                            {lead.status !== 'new' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => updateLeadStatus(lead, 'new')}
+                                title="החזר לחדשה"
+                                className="hover:bg-orange-50"
+                              >
+                                חדשה
+                              </Button>
+                            )}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => removeLead(lead.id)}
+                              title="מחק פנייה"
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
             )}
           </div>
         )}

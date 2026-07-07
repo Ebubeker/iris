@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
@@ -11,8 +11,14 @@ import CookiesPolicy from './pages/CookiesPolicy';
 import AccessibilityStatement from './pages/AccessibilityStatement';
 import About from './pages/About';
 import FAQ from './pages/FAQ';
+import ServiceDetail from './pages/ServiceDetail';
+import WhatsAppButton from './components/WhatsAppButton';
 
 export default function App() {
+  const location = useLocation();
+  // Hide the marketing WhatsApp CTA in the admin area.
+  const showWhatsApp = !location.pathname.startsWith('/admin');
+
   return (
     <AuthProvider>
       <div className="min-h-screen relative">
@@ -22,6 +28,7 @@ export default function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:id" element={<BlogDetail />} />
+            <Route path="/services/:slug" element={<ServiceDetail />} />
             <Route path="/about" element={<About />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -30,6 +37,7 @@ export default function App() {
             <Route path="/accessibility-statement" element={<AccessibilityStatement />} />
           </Routes>
         </main>
+        {showWhatsApp && <WhatsAppButton />}
       </div>
     </AuthProvider>
   );

@@ -10,11 +10,15 @@ import { Label } from '../components/ui/label';
 import { Badge } from '../components/ui/badge';
 import { blogService } from '../services/blogService';
 import { testimonialService } from '../services/testimonialService';
+import { leadService } from '../services/leadService';
 import { BlogPost, Testimonial } from '../lib/supabase';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import SEO from '../components/SEO';
 import CookieBanner from '../components/CookieBanner';
+import { trackLead, trackWhatsAppClick, trackPhoneClick, trackTestimonial } from '../utils/analytics';
+import { WHATSAPP_URL, PHONE_DISPLAY, PHONE_TEL } from '../data/contact';
+import { employeeServices, employerServices, ServiceItem } from '../data/services';
 // @ts-ignore
 import heroImage from 'figma:asset/24970e13ba695a8b5fca661a1de5bf574ad76d59.png';
 // @ts-ignore
@@ -22,21 +26,9 @@ import backgroundImage from '../assets/background.png';
 // @ts-ignore
 import artboardImage from '../../Artboard 1.png';
 
-interface Service {
-  icon: React.ReactNode;
-  title: string;
-  subtitle?: string;
-  fullDescription: string;
-  benefits?: string[];
-  benefitsTitle?: string;
-  additionalBenefits?: string[];
-  additionalBenefitsTitle?: string;
-  buttonText?: string;
-}
-
 export default function Home() {
   const location = useLocation();
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Blog posts state
@@ -144,6 +136,7 @@ export default function Home() {
       });
       setTestimonialStatus('success');
       setTestimonialForm({ name: '', role: '', content: '' });
+      trackTestimonial();
     } catch (error) {
       console.error('Testimonial submission error:', error);
       setTestimonialStatus('error');
@@ -181,266 +174,74 @@ export default function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Honeypot: this hidden field is invisible to humans. If it's filled, it's a
+    // bot — show a fake success so the bot gets no signal, and drop the request.
+    const honeypot = e.target.querySelector('input[name="botcheck"]');
+    if (honeypot && honeypot.value) {
+      setSubmitStatus('success');
+      setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus(null);
 
+    const payload = { ...formData };
+
+    // 1) Persist to Supabase FIRST — this is the source of truth. As long as this
+    //    insert succeeds the lead is safe, even if the email notification fails.
+    let savedToDb = false;
     try {
-      // Use a hidden iframe to submit the form and avoid CORS issues
-      const form = e.target;
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.name = 'web3forms-iframe';
-      document.body.appendChild(iframe);
-
-      // Set form target to the iframe
-      form.target = 'web3forms-iframe';
-      form.action = 'https://api.web3forms.com/submit';
-      form.method = 'POST';
-
-      // Add hidden fields for Web3Forms
-      const hiddenFields = {
-        'access_key': '0ddbf514-10e6-4118-9585-204a4d905960',
-        'subject': 'בקשה להצעת מחיר - iris-hr.work',
-        'from_name': 'iris-hr.work Contact Form',
-        'to': 'info@iris-hr.work',
-        'redirect': 'false'
-      };
-
-      // Add hidden inputs
-      Object.entries(hiddenFields).forEach(([name, value]) => {
-        let input = form.querySelector(`input[name="${name}"]`);
-        if (!input) {
-          input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = name;
-          form.appendChild(input);
-        }
-        input.value = value;
+      await leadService.submitLead({
+        name: payload.name.trim(),
+        email: payload.email.trim(),
+        phone: payload.phone.trim() || undefined,
+        service: payload.service || undefined,
+        message: payload.message.trim() || undefined,
       });
-
-      // Handle iframe load event
-      iframe.onload = () => {
-        // Assume success since Web3Forms doesn't return CORS-friendly responses
-        setSubmitStatus('success');
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          service: '',
-          message: ''
-        });
-
-        // Clean up
-        document.body.removeChild(iframe);
-        form.target = '';
-        form.action = '';
-        form.method = '';
-
-        // Remove hidden inputs
-        Object.keys(hiddenFields).forEach(name => {
-          const input = form.querySelector(`input[name="${name}"]`);
-          if (input) {
-            form.removeChild(input);
-          }
-        });
-
-        setIsSubmitting(false);
-      };
-
-      // Submit the form
-      form.submit();
-
+      savedToDb = true;
     } catch (error) {
-      console.error('Form submission error:', error);
-      setSubmitStatus('error');
-      setIsSubmitting(false);
+      console.error('Lead DB save failed:', error);
     }
+
+    // 2) Best-effort email notification via Web3Forms, using their JSON API so we
+    //    can read the REAL result instead of blindly assuming success.
+    let emailDelivered = false;
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: '0ddbf514-10e6-4118-9585-204a4d905960',
+          subject: 'בקשה להצעת מחיר - iris-hr.work',
+          from_name: 'iris-hr.work Contact Form',
+          name: payload.name,
+          email: payload.email,
+          phone: payload.phone,
+          service: payload.service,
+          message: payload.message,
+        }),
+      });
+      const result = await res.json().catch(() => ({}));
+      emailDelivered = res.ok && result.success === true;
+      if (!emailDelivered) console.error('Web3Forms did not confirm delivery:', result);
+    } catch (error) {
+      console.error('Email notification failed:', error);
+    }
+
+    // Success if the lead was captured by EITHER channel; error only if both fail.
+    if (savedToDb || emailDelivered) {
+      setSubmitStatus('success');
+      setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+      trackLead(payload.service, emailDelivered);
+    } else {
+      setSubmitStatus('error');
+    }
+
+    setIsSubmitting(false);
   };
 
-  const employeeServices = [
-    {
-      title: "ניתוח תלוש שכר",
-      subtitle: "לדעת, להבין ולהרוויח",
-      description: "זיהוי טעויות והבטחת קבלת מלוא הזכויות",
-      icon: <FileText className="h-8 w-8 text-orange-500" />,
-      fullDescription: "תלוש השכר הוא לא רק מספרים. בבדיקה אישית ומעמיקה אני עוזרת לך להבין את כל רכיבי השכר, ההפרשות, הניכויים והזכויות - כדי לוודא שמגיע לך כל מה שמגיע, בזמן העבודה ובסיומה. השירות כולל הסבר ברור, ייעוץ שכר מקצועי וליווי אמפתי שמעניקים ביטחון, ידע ושליטה אמיתית במה שמגיע לך.",
-      benefitsTitle: "למה חשוב לבצע ניתוח תלוש שכר?",
-      benefits: [
-        "שקט נפשי וביטחון כלכלי - הידיעה שכל רכיב שכר, ניכוי והפרשה מחושבים נכון מעניקה יציבות ויכולת לתכנן קדימה בראש שקט.",
-        "גילוי ותיקון טעויות בזמן - טעויות בתלוש שכר או בחישובי שעות נוספות, מס או פנסיה קורות לעיתים קרובות. בדיקה מוקדמת מונעת הפסדים מיותרים.",
-        "הבנת הזכויות הסוציאליות שלך - חופשה, מחלה, פנסיה, הבראה ושעות עבודה הופכים ברורים ופשוטים להבנה.",
-        "העצמה וביטחון אישי - כשאתה מבין את תלוש המשכורת שלך, אתה מרגיש בטוח יותר בעבודה, בשיח עם המעסיק ובכל שינוי תעסוקתי.",
-        "מניעת הלנת שכר ואי-הבנות - ידע מדויק יוצר מערכת יחסים הוגנת, שקופה ומכבדת בינך לבין מקום העבודה."
-      ],
-      buttonText: "בדוק את התלוש שלך"
-    },
-    {
-      title: "ייעוץ על הסכמי עבודה",
-      subtitle: "להבין. לשפר. להגן על עצמך.",
-      description: "הבנה והכוונה לפני החתימה",
-      icon: <User className="h-8 w-8 text-orange-500" />,
-      fullDescription: "לפני שחותמים על הסכם עבודה חשוב להבין כל סעיף. אני מציעה קריאה וניתוח מעמיק של ההסכם כדי לוודא הוגנות ושקיפות, חישוב שכר תקין, זכויות עובדים מלאות והטמעה נכונה של תנאי העסקה. במהלך הפגישה נעבור יחד בשפה פשוטה וברורה על תלוש משכורת, רכיבי שכר, שעות עבודה ושעות נוספות, הפרשות לפנסיה וקרן השתלמות, ימי חופשה וימי מחלה, ניכויים וזיכויים, ביטוח לאומי ומס הכנסה, ונבנה המלצות לשיפור התנאים ולמשא ומתן יעיל ומכבד.",
-      benefitsTitle: "מה נבדוק יחד",
-      benefits: [
-        "חישובי שכר, תלוש משכורת, רכיבי שכר, שעות נוספות וזכויות סוציאליות.",
-        "ימי חופשה, ימי מחלה, דמי הבראה, הפרשות סוציאליות, פנסיה וקרן השתלמות.",
-        "סעיפים מרכזיים כמו תקופת ניסיון, סעיף 14, פיצויי פיטורים, סודיות ואי תחרות, שימוע והלנת שכר.",
-        "תנאי עבודה בפועל כמו מיקום, מודל היברידי, זמינות, עבודה בערבי חג ושבת, היקף ושעות עבודה.",
-        "תגמול והטבות כמו בונוסים, רכב, טלפון והחזרי הוצאות המשפיעים על השכר הכולל.",
-        "מסים והטבות מס כמו תיאום מס, נקודות זיכוי, ניכויים וזיכויים."
-      ],
-      additionalBenefitsTitle: "היתרון שלכם",
-      additionalBenefits: [
-        "הבנה מלאה של כל סעיף ללא אותיות קטנות והפתעות.",
-        "זיהוי מוקדם של סעיפים בעייתיים שעלולים לפגוע בזכויות שלכם.",
-        "הכנה מקצועית למשא ומתן כדי לדעת מה לשאול, איך לבקש ואיך לעמוד על שלכם בנועם.",
-        "הגנה על הזכויות והעתיד התעסוקתי בזמן העבודה ובסיומה.",
-        "חיסכון בזמן ובטעויות בזכות בדיקה יסודית ובהירה.",
-        "בסיס נכון לבקשת העלאת שכר או לשדרוג תנאים כשמגיע לכם."
-      ],
-      buttonText: "קבע ייעוץ על ההסכם"
-    },
-    {
-      title: "ליווי מול רשויות",
-      subtitle: "לברר. להגיש. לקבל מה שמגיע.",
-      description: "ביטוח לאומי ומס הכנסה",
-      icon: <Phone className="h-8 w-8 text-orange-500" />,
-      fullDescription: "התנהלות מול ביטוח לאומי, מס הכנסה או חברות הביטוח יכולה להיות מתישה ומבלבלת - אבל אתם לא צריכים לעבור את זה לבד. אני כאן כדי ללוות אתכם באופן אישי ומקצועי, לוודא שכל הזכויות הסוציאליות, הפנסיוניות והמיסויות שלכם נשמרות, ושתקבלו את כל מה שמגיע לכם - במלואו.",
-      benefitsTitle: "השירות כולל",
-      benefits: [
-        "הכנת מסמכים, טפסים ודוחות בצורה מדויקת וברורה - כולל תיאום מס, נקודות זיכוי והחזרי מס.",
-        "ליווי מול ביטוח לאומי ומס הכנסה, כולל טיפול בתביעות, עררים ובקשות מיוחדות.",
-        "סיוע מול חברות ביטוח, קופות גמל וקרנות השתלמות - כדי לוודא שההפרשות והזכויות הפנסיוניות שלכם מתבצעות כנדרש.",
-        "ייעוץ שכר והכוונה מקצועית שמחברת בין תלוש המשכורת, ההפרשות הסוציאליות וההתנהלות מול הרשויות.",
-        "בדיקה מקיפה של הזכאות שלכם לגמלאות, דמי לידה, דמי אבטלה, נכות ועוד - והכוונה מדויקת להמשך הדרך."
-      ],
-      buttonText: "בדוק את הזכאות שלך"
-    },
-    {
-      title: "פנסיה בתלוש השכר",
-      subtitle: "לבדוק. להבין. לשמור על הפנסיה שלך.",
-      description: "בדיקת הפרשות לפנסיה",
-      icon: <PiggyBank className="h-8 w-8 text-orange-500" />,
-      fullDescription: "הפנסיה שלך היא חלק חשוב מהביטחון הכלכלי שלך - וחשוב לוודא שכבר היום הכול מחושב נכון. בבדיקה אישית אני בוחנת את ההפרשות לפנסיה בתלוש השכר, את גובה ההפרשות בפועל, ואת התאמתן להוראות החוק ולתנאי ההעסקה שלך. השירות כולל בדיקה יסודית של רכיבי השכר, ההפרשות הסוציאליות, הניכויים והזכויות - כדי לוודא שכל שקל מופרש כנדרש ושלא חסרות זכויות או סכומים בדרך.",
-      benefitsTitle: "היתרונות",
-      benefits: [
-        "וידוא שכל ההפרשות לפנסיה מחושבות ומבוצעות בצורה מדויקת.",
-        "בדיקה מקיפה של תלוש השכר ורכיבי ההפרשה הסוציאלית.",
-        "איתור טעויות או חוסרים בהפקדות הפנסיה ובקרן ההשתלמות.",
-        "הסבר ברור על משמעות ההפרשות והניכויים בתלוש.",
-        "ביטחון ושקט נפשי בידיעה שהפנסיה שלך מנוהלת נכון מול המעסיק."
-      ],
-      buttonText: "בדוק את הפנסיה שלך"
-    },
-    {
-      title: "סיום העסקה",
-      subtitle: "פיטורין, התפטרות או פרישה - כדי לוודא שתקבלו את כל מה שמגיע לכם",
-      description: "ליווי בעזיבת מקום עבודה",
-      icon: <LogOut className="h-8 w-8 text-orange-500" />,
-      fullDescription: "סיום עבודה הוא רגע משמעותי - לפעמים מפתיע, לפעמים מתוכנן - ותמיד חשוב לעשות אותו נכון. אני מלווה אתכם באופן אישי ומקצועי כדי לוודא שכל הזכויות הסוציאליות והכספיות נשמרות, שכל חישובי השכר והפיצויים תקינים, ושתצאו מהתהליך עם בהירות, ביטחון ושקט נפשי לקראת הדרך החדשה שלכם.",
-      benefitsTitle: "השירות כולל",
-      benefits: [
-        "ליווי בהליך שימוע - הכנה לשיחה, ניסוח תגובה מקצועית והכוונה להצגת הדברים באופן מכבד ומדויק.",
-        "בדיקה יסודית של תלוש השכר וגמר החשבון - פיצויי פיטורין, ימי חופשה, הבראה, הודעה מוקדמת והפרשות לפנסיה ולקרן השתלמות.",
-        "הכנת מכתב התפטרות מותאם אישית, מנוסח נכון מבחינה משפטית ותעסוקתית.",
-        "הדרכה מלאה למילוי טופס 161 וליווי מול מס הכנסה, ביטוח לאומי וחברות הביטוח לשחרור כספים וזכויות.",
-        "ליווי בפגישות עם HR או המעסיק, לפי הצורך.",
-        "הכוונה מלאה להמשך הדרך - התנהלות נכונה לאחר סיום ההעסקה, כולל בדיקת זכאות לדמי אבטלה, פנסיה וגמלאות."
-      ],
-      buttonText: "בדוק את זכויותיך בסיום עבודה"
-    },
-    {
-      title: "ליווי במציאת עבודה",
-      subtitle: "להתמקד. להתכונן. למצוא את המקום הנכון עבורך.",
-      description: "קורות חיים והכוונה",
-      icon: <BriefcaseBusiness className="h-8 w-8 text-orange-500" />,
-      fullDescription: "חיפוש עבודה הוא תהליך שיכול להיות מתיש ומבלבל - אבל עם ליווי נכון הוא הופך להזדמנות אמיתית לצמיחה. אני כאן כדי ללוות אותך צעד-צעד - משלב כתיבת קורות החיים ועד הריאיון והחתימה על החוזה - בדרך אישית, ממוקדת וברורה.",
-      benefitsTitle: "השירות כולל",
-      benefits: [
-        "בניית קורות חיים מקצועיים - התאמה אישית שמבליטה את החוזקות, הניסיון והכישורים שלך בצורה נכונה ומדויקת.",
-        "הכנה לראיונות עבודה - סימולציות ממוקדות, תשובות לשאלות מאתגרות וטיפים יעילים להתמודדות עם מצבי לחץ וביטחון עצמי.",
-        "אסטרטגיית חיפוש עבודה מותאמת אישית - לפי התחום, היעדים והשאיפות שלך, כולל הכוונה למשרות ולמעסיקים המתאימים לך באמת.",
-        "הכוונה תעסוקתית מקצועית - עזרה בבחירת כיוון תעסוקתי, מעבר תחום או שינוי קריירה באופן מושכל ובטוח.",
-        "הכנה לשלב החוזה וההעסקה - לוודא שההצעה שקיבלת תואמת את הציפיות והזכויות שלך."
-      ],
-      buttonText: "התחל לחפש עבודה"
-    }
-  ];
-
-  const employerServices = [
-    // {
-    //   title: "בקרה על תלושי שכר",
-    //   description: "מניעת טעויות ושמירה על חוקיות",
-    //   icon: <FileText className="h-8 w-8 text-orange-500" />,
-    //   subtitle: "לבדוק. לוודא. לעבוד בראש שקט.",
-    //   fullDescription: "ניהול שכר תקין הוא אחד התחומים הרגישים ביותר בעסק - טעויות קטנות עלולות להפוך במהירות להוצאה גדולה או לתביעה מיותרת. אני מציעה שירות בקרה מקיף על מערכת השכר בעסק שלך, המותאם במיוחד לעסקים קטנים ובינוניים. השירות כולל בדיקת תלושי שכר, בחינת הפרשות סוציאליות, עמידה בדרישות החוק והרגולציה, והקמת נהלי בקרה פנימיים שמונעים טעויות מראש. בזכות הניסיון הרב שלי כחשבת ומבקרת שכר, אני יודעת לזהות אי-סדרים, למנוע טעויות חוזרות ולהעניק למעסיק שקט נפשי וביטחון שהכול מתנהל כשורה.",
-    //   benefitsTitle: "השירות כולל",
-    //   benefits: [
-    //     "בדיקה יסודית של תלושי השכר והעמידה בדרישות דיני העבודה",
-    //     "בקרה על חישובי שכר, שעות עבודה, ניכויים והפרשות לפנסיה ולביטוח לאומי",
-    //     "הקמת נהלי בקרה פנימיים והדרכה לתפעול שוטף של מערכת השכר",
-    //     "זיהוי מוקדם של טעויות שעלולות לעלות כסף או לגרור תביעות עובדים",
-    //     "דו\"ח ממצאים ברור עם המלצות מעשיות לשיפור וייעול"
-    //   ],
-    //   additionalBenefitsTitle: "היתרונות שלך",
-    //   additionalBenefits: [
-    //     "מניעת טעויות יקרות וחיסכון בזמן ובכסף",
-    //     "עמידה מלאה בדרישות החוק ובתקנות העבודה",
-    //     "הקמת מערכת בקרה פנימית שמבטיחה דיוק ושקיפות",
-    //     "שמירה על אמון העובדים והגנה על מוניטין העסק"
-    //   ],
-    //   buttonText: "וודא שהכול מחושב נכון"
-    // },
-    // {
-    //   title: "ייעוץ בהסכמי עבודה",
-    //   description: "בניית חוזים מותאמים והוגנים",
-    //   icon: <User className="h-8 w-8 text-orange-500" />,
-    //   subtitle: "לדייק. לבדוק. להעסיק כחוק.",
-    //   fullDescription: "ניהול עובדים מתחיל מהבסיס - הסכם עבודה ברור, מאוזן וחוקי שמגן גם על העסק וגם על העובדים. אני מציעה ליווי וייעוץ אישי בבניית הסכמי העסקה מותאמים לעסק שלך, שמבטיחים עמידה בדרישות החוק, הוגנות כלפי העובדים ושקט נפשי למעסיק. באמצעות ניסיון רב בעולם השכר, דיני העבודה והבקרה, אני עוזרת לנסח חוזים שקופים וברורים שמונעים אי-הבנות ומבססים מערכת יחסים מקצועית ויציבה לטווח ארוך.",
-    //   benefitsTitle: "השירות כולל",
-    //   benefits: [
-    //     "התאמת הסכמי העסקה לצרכים ולמבנה של העסק שלך",
-    //     "ניסוח סעיפים ברורים בנושאי שכר, שעות עבודה, זכויות סוציאליות ופיצויי פיטורים",
-    //     "בדיקה ועדכון חוזי עבודה כך שיעמדו במבחן החוק",
-    //     "שילוב סעיפים המגנים על העסק תוך שמירה על הוגנות ושקיפות מול העובדים",
-    //     "ייעוץ מעשי לשיפור חוזים קיימים והפחתת סיכונים עתידיים"
-    //   ],
-    //   additionalBenefitsTitle: "יתרונות השירות",
-    //   additionalBenefits: [
-    //     "חוזים מותאמים אישית לצרכי העסק",
-    //     "הגנה משפטית ועמידה בדרישות החוק",
-    //     "ניסוח סעיפים ברורים ומאוזנים לשני הצדדים",
-    //     "מניעת מחלוקות וסכסוכי עבודה עתידיים",
-    //     "חיסכון בזמן ובטעויות שנובעות מחוזים כלליים או לא מעודכנים"
-    //   ],
-    //   buttonText: "עדכן חוזי עבודה"
-    // },
-    {
-      title: "גיוס בהתאמה אישית",
-      description: "התאמת עובדים ממאגר אישי",
-      icon: <BriefcaseBusiness className="h-8 w-8 text-orange-500" />,
-      subtitle: "לדעת מה צריך. למצוא מי שמתאים.",
-      fullDescription: "גיוס עובדים הוא תהליך מורכב שדורש זמן, הקשבה ודיוק - במיוחד בעסקים שבהם כל עובד עושה הבדל גדול. אני מציעה שירות גיוס והשמה אישי ומקצועי שמאפשר לך למצוא את האדם המתאים ביותר - בקלות, ביעילות ובאופן שמשקף את הצרכים, הערכים והתרבות של העסק שלך. עם ניסיון רב בתחום השכר, יחסי העבודה והניהול, אני פועלת כמו שותפה אמיתית לדרך - מלווה אותך בכל שלב עד שהעובד הנכון מצטרף לצוות שלך.",
-      benefitsTitle: "השירות כולל",
-      benefits: [
-        "פגישה בעסק ובסביבת העבודה כדי להבין לעומק את הצרכים, התרבות הארגונית והאופי של הצוות",
-        "הגדרה מדויקת של התפקיד והדרישות למשרה בהתאם למציאות בשטח ולתקציב השכר",
-        "ניסוח מודעת דרושים מקצועית, מושכת וברורה שמשקפת את רוח העסק",
-        "הפצת המודעה בקבוצות ייעודיות ובקהילות אמינות של מנהלי משאבי אנוש, עסקים וקיבוצים",
-        "ראיונות טלפוניים ראשוניים וסינון מועמדים לפי התאמה מקצועית ואישיותית",
-        "ליווי מלא בתהליך הראיונות - כולל אפשרות לנוכחות אישית בראיונות לסיוע בבחירה הנכונה",
-        "סיוע בניסוח הסכמי העסקה ותנאי שכר בהתאם לדיני העבודה ולצרכים של העסק"
-      ],
-      additionalBenefitsTitle: "יתרונות השירות",
-      additionalBenefits: [
-        "חיסכון בזמן ובעלות של תהליכי גיוס",
-        "התאמה מדויקת של מועמדים לצרכים האמיתיים של העסק",
-        "גיוס מהיר ומבוסס ניסיון שטח רב שנים",
-        "ביטחון שכל תהליך ההעסקה מתבצע כחוק, בהוגנות ובשקיפות מלאה"
-      ],
-      buttonText: "מצא את העובד הנכון עבורך"
-    }
-  ];
 
   // Fallback static posts in case no featured posts are available
   const fallbackBlogPosts = [
@@ -476,12 +277,12 @@ export default function Home() {
           ...employeeServices.map((s) => ({
             name: s.title,
             description: s.fullDescription,
-            url: '/#employee-services',
+            url: `/services/${s.slug}`,
           })),
           ...employerServices.map((s) => ({
             name: s.title,
             description: s.fullDescription,
-            url: '/#employer-services',
+            url: `/services/${s.slug}`,
           })),
         ]}
       />
@@ -557,11 +358,18 @@ export default function Home() {
                   <CardContent className="p-8 text-center space-y-6 h-full flex flex-col justify-center">
                     <div className="flex justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                       <div className="p-4 rounded-full bg-orange-400 group-hover:bg-orange-100 transition-colors duration-300">
-                        {service.icon}
+                        <service.Icon className="h-8 w-8 text-orange-500" />
                       </div>
                     </div>
                     <h3 className="text-xl text-gray-900 font-semibold group-hover:text-orange-600 transition-colors duration-300 mb-4">{service.title}</h3>
-                    <p className="text-gray-600 leading-relaxed flex-grow">{service.description}</p>
+                    <p className="text-gray-600 leading-relaxed flex-grow">{service.shortDescription}</p>
+                    <Link
+                      to={`/services/${service.slug}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-orange-500 text-sm font-medium mt-2 hover:text-orange-600"
+                    >
+                      קראו עוד ←
+                    </Link>
                   </CardContent>
                 </Card>
               ))}
@@ -590,11 +398,18 @@ export default function Home() {
                   <CardContent className="p-8 text-center space-y-6 h-full flex flex-col justify-center">
                     <div className="flex justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                       <div className="p-4 rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors duration-300">
-                        {service.icon}
+                        <service.Icon className="h-8 w-8 text-orange-500" />
                       </div>
                     </div>
                     <h3 className="text-xl text-gray-900 font-semibold group-hover:text-orange-600 transition-colors duration-300 mb-4">{service.title}</h3>
-                    <p className="text-gray-600 leading-relaxed flex-grow">{service.description}</p>
+                    <p className="text-gray-600 leading-relaxed flex-grow">{service.shortDescription}</p>
+                    <Link
+                      to={`/services/${service.slug}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-orange-500 text-sm font-medium mt-2 hover:text-orange-600"
+                    >
+                      קראו עוד ←
+                    </Link>
                   </CardContent>
                 </Card>
               ))}
@@ -904,12 +719,19 @@ export default function Home() {
                 <h3 className="text-2xl font-bold text-gray-900 mb-6 text-right">קבלו הצעת מחיר</h3>
 
                 <form
-                  action="https://api.web3forms.com/submit"
-                  method="POST"
                   onSubmit={handleSubmit}
                   className="space-y-6"
                   dir="rtl"
                 >
+                  {/* Honeypot — hidden from humans, catches bots. Do not remove. */}
+                  <input
+                    type="text"
+                    name="botcheck"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    style={{ position: 'absolute', left: '-5000px', opacity: 0, height: 0, width: 0 }}
+                  />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="name" className="text-right block mb-2 text-gray-700">שם מלא *</Label>
@@ -1055,7 +877,14 @@ export default function Home() {
                   <div className="space-y-2">
                     <Phone className="h-8 w-8 text-orange-500 mx-auto" />
                     <p className="text-gray-600">טלפון</p>
-                    <p className="text-lg">0508836955</p>
+                    <a
+                      href={`tel:${PHONE_TEL}`}
+                      onClick={() => trackPhoneClick('contact-section')}
+                      className="text-lg hover:text-orange-500 transition-colors"
+                      dir="ltr"
+                    >
+                      {PHONE_DISPLAY}
+                    </a>
                   </div>
                   <div className="space-y-2">
                     <Mail className="h-8 w-8 text-orange-500 mx-auto" />
@@ -1074,7 +903,12 @@ export default function Home() {
                   className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4"
                   asChild
                 >
-                  <a href="https://wa.me/972508836955" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={WHATSAPP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackWhatsAppClick('contact-section')}
+                  >
                     <MessageCircle className="mr-2 h-4 w-4" />
                     דברו איתי ב-WhatsApp
                   </a>
@@ -1091,7 +925,7 @@ export default function Home() {
               <>
                 <DialogHeader>
                   <DialogTitle className="text-2xl text-right flex items-center justify-end gap-3 flex-row-reverse">
-                    {selectedService?.icon}
+                    <selectedService.Icon className="h-8 w-8 text-orange-500" />
                     <span>{selectedService?.title}</span>
                   </DialogTitle>
                 </DialogHeader>
@@ -1142,6 +976,15 @@ export default function Home() {
                     </div>
                   )}
 
+                  <div className="text-center pt-2">
+                    <Link
+                      to={`/services/${selectedService.slug}`}
+                      onClick={() => setIsDialogOpen(false)}
+                      className="text-orange-500 hover:text-orange-600 font-medium underline"
+                    >
+                      קראו עוד על השירות ←
+                    </Link>
+                  </div>
                 </div>
                 <div className="flex justify-center gap-4 pt-6 border-t">
                   <Button
@@ -1155,7 +998,13 @@ export default function Home() {
                     className="bg-orange-500 hover:bg-orange-600 text-white px-8"
                     asChild
                   >
-                    <a href="https://wa.me/972508836955" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
+                    <a
+                      href={WHATSAPP_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackWhatsAppClick(`service-dialog:${selectedService?.title || ''}`)}
+                      className="flex items-center justify-center gap-2"
+                    >
                       <span>{selectedService?.buttonText || "צור קשר עכשיו"}</span>
                       <MessageCircle className="h-5 w-5 flex-shrink-0" />
                     </a>
@@ -1291,8 +1140,21 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
               <div className="text-center md:text-right">
                 <h3 className="text-lg mb-4">צור קשר</h3>
-                <p className="text-gray-300">טלפון: 0508836955</p>
-                <p className="text-gray-300">מייל: info@iris-hr.work</p>
+                <p className="text-gray-300">
+                  טלפון:{' '}
+                  <a
+                    href={`tel:${PHONE_TEL}`}
+                    onClick={() => trackPhoneClick('footer')}
+                    className="hover:text-orange-500 transition-colors"
+                    dir="ltr"
+                  >
+                    {PHONE_DISPLAY}
+                  </a>
+                </p>
+                <p className="text-gray-300">
+                  מייל:{' '}
+                  <a href="mailto:info@iris-hr.work" className="hover:text-orange-500 transition-colors">info@iris-hr.work</a>
+                </p>
                 <p className="text-gray-300">מיקום: גבעת ברנר</p>
               </div>
               <div className="text-center">
